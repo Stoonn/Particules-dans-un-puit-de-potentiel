@@ -8,30 +8,41 @@ class InterfaceGraphique(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
 
+        # Configuration de la grille
         self.grid_rowconfigure(0, weight=0)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=7)
 
         # ici ce sera la largeur a du puit
-        self.Largeurtext = tk.Spinbox(self, from_=0, to=100)
-        self.Largeurtext.grid(row=0, column=0, sticky='n')
-        
+        Largeurtext = tk.Spinbox(self, from_=0, to=100)
+        Largeurtext.grid(row=0, column=0, sticky='n')
+
         largeur = tk.Label(self, text='Largeur a :')
         largeur.grid(row=0, column=0, sticky='nw')
 
-        self.infinibout = tk.Checkbutton(self, text='potentiel infini', onvalue=True, offvalue=False)
+        # Bouton a check permettant d'activer et désactiver le potentiel infini
+        self.var1 = tk.BooleanVar()
+        self.infinibout = tk.Checkbutton(self, text='potentiel infini',
+                                         variable=self.var1,
+                                         command=self.infini)
         self.infinibout.grid(row=1, column=0, sticky='nw')
 
+        # Bouton potentiel v
+        self.Hauteurpuit = tk.Spinbox(self, from_=0, to=100)
+        self.Hauteurpuit.grid(row=2, column=0, sticky='n')
 
+        hauteur = tk.Label(self, text='Potentiel v :')
+        hauteur.grid(row=2, column=0, sticky='nw')
 
-
-
-
-
-
-
-
-
+    def infini(self):
+        if self.var1.get():
+            v = 0
+            self.Hauteurpuit.destroy()
+        else:
+            self.Hauteurpuit = tk.Spinbox(self, from_=0, to=100)
+            self.Hauteurpuit.grid(row=2, column=0, sticky='n')
+            v = self.Hauteurpuit.get()
+        return v
 
 
 Interface = InterfaceGraphique()
