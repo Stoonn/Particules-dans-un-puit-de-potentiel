@@ -1,6 +1,7 @@
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from numpy import *
+from matplotlib.figure import Figure
 
 
 class InterfaceGraphique(tk.Tk):
@@ -14,10 +15,10 @@ class InterfaceGraphique(tk.Tk):
         self.grid_columnconfigure(1, weight=7)
 
         # ici ce sera la largeur a du puit
-        Largeurtext = tk.Spinbox(self, from_=0, to=100)
-        Largeurtext.grid(row=0, column=0, sticky='n')
+        Largeurtext = tk.Spinbox(self, from_=0, to=100, width=5)
+        Largeurtext.grid(row=0, column=0, sticky='ne')
 
-        largeur = tk.Label(self, text='Largeur a :')
+        largeur = tk.Label(self, text='largeur a :')
         largeur.grid(row=0, column=0, sticky='nw')
 
         # Bouton a check permettant d'activer et désactiver le potentiel infini
@@ -28,21 +29,40 @@ class InterfaceGraphique(tk.Tk):
         self.infinibout.grid(row=1, column=0, sticky='nw')
 
         # Bouton potentiel v
-        self.Hauteurpuit = tk.Spinbox(self, from_=0, to=100)
-        self.Hauteurpuit.grid(row=2, column=0, sticky='n')
+        self.Hauteur_puit = tk.Spinbox(self, from_=0, to=100, width=3)
+        self.Hauteur_puit.grid(row=2, column=0, sticky='ne')
 
-        hauteur = tk.Label(self, text='Potentiel v :')
-        hauteur.grid(row=2, column=0, sticky='nw')
+        self.hauteur_text = tk.Label(self, text='potentiel v :')
+        self.hauteur_text.grid(row=2, column=0, sticky='nw')
 
+        # figure matplotlib
+        self.fig = Figure()
+        self.ax = self.fig.add_subplot(111)
+
+        # insertion dans subplot
+        self.canvas = FigureCanvasTkAgg(self.fig)
+        self.canvas.get_tk_widget().grid(row=0,
+                                         rowspan=40, column=1, sticky='nsew')
+
+        # fonction pour afficher le graphe
+        # self.modif_graphe()
+
+    # fonction permettant de passer s'un puit fini à infini
     def infini(self):
         if self.var1.get():
             v = 0
-            self.Hauteurpuit.destroy()
+            self.Hauteur_puit.destroy()
+            self.hauteur_text.destroy()
         else:
-            self.Hauteurpuit = tk.Spinbox(self, from_=0, to=100)
-            self.Hauteurpuit.grid(row=2, column=0, sticky='n')
-            v = self.Hauteurpuit.get()
+            self.Hauteur_puit = tk.Spinbox(self, from_=0, to=100, width=3)
+            self.Hauteur_puit.grid(row=2, column=0, sticky='ne')
+            self.hauteur_text = tk.Label(self, text='potentiel v :')
+            self.hauteur_text.grid(row=2, column=0, sticky='nw')
+            v = self.Hauteur_puit.get()
         return v
+
+    # fonction pour modifier le graphe en temps réel
+    # def modif_graphe(self):
 
 
 Interface = InterfaceGraphique()
