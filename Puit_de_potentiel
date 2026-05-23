@@ -1,6 +1,6 @@
 import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from numpy import *
+import numpy as np
 from matplotlib.figure import Figure
 
 
@@ -55,6 +55,7 @@ class InterfaceGraphique(tk.Tk):
             v = 0
             self.Hauteur_puit.destroy()
             self.hauteur_text.destroy()
+            self.puit_infini()
         else:
             self.Hauteur_puit = tk.Spinbox(self, from_=0, to=100, width=3)
             self.Hauteur_puit.grid(row=2, column=0, sticky='ne')
@@ -63,11 +64,28 @@ class InterfaceGraphique(tk.Tk):
             v = self.Hauteur_puit.get()
         return v
 
+    def puit_infini(self):
+        self.ax.clear()
+        L = self.Largeurtext.get()
+        coeff = 1/np.sqrt(int(L))
+        x = np.linspace(-int(L), int(L), 1000)
+        psy = np.zeros_like(x)
+        absol = np.abs(x) <= int(L)
+        for n in range(10):
+            E = (n * np.pi) ** 2 / (4 * int(L) ** 2)
+            if n % 2 == 0:
+                psy[absol] = coeff * np.sin(n * np.pi * x[absol] / (2 * int(L)))
+            else:
+                psy[absol] = coeff * np.cos(n * np.pi * x[absol] / (2 * int(L)))
+            self.ax.plot(x, psy + E)
+        self.canvas.draw()
+
     # fonction pour modifier le graphe en temps réel
     # def modif_graphe(self):
 
     # fonction pour update les xlim
     def update(self):
+
         a = self.Largeurtext.get()
         self.ax.set_xlim(-int(a)-2, int(a)+2)
         self.canvas.draw()
