@@ -8,12 +8,21 @@ class InterfaceGraphique(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
 
-        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=0)
         self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=2)
+        self.grid_columnconfigure(1, weight=7)
 
-        button1 = tk.Button(self, text="Button 1")
-        button1.grid(column=0, row=0, sticky="nesw")
+        # ici ce sera la largeur a du puit
+        self.Largeurtext = tk.Spinbox(self, from_=0, to=100)
+        self.Largeurtext.grid(row=0, column=0, sticky='n')
+        
+        largeur = tk.Label(self, text='Largeur a :')
+        largeur.grid(row=0, column=0, sticky='nw')
+
+        self.infinibout = tk.Checkbutton(self, text='potentiel infini', onvalue=True, offvalue=False)
+        self.infinibout.grid(row=1, column=0, sticky='nw')
+
+
 
 
 
