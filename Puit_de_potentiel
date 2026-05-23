@@ -59,10 +59,8 @@ class InterfaceGraphique(tk.Tk):
             self.Hauteur_puit.grid(row=2, column=0, sticky='ne')
             self.hauteur_text = tk.Label(self, text='potentiel v :')
             self.hauteur_text.grid(row=2, column=0, sticky='nw')
-            v = self.Hauteur_puit.get()
             self.ax.clear()
             self.canvas.draw()
-        return v
 
     # fonction d'onde pour le puit infini
     def puit_infini(self):
