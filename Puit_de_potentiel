@@ -32,7 +32,6 @@ class InterfaceGraphique(tk.Tk):
         # Bouton potentiel v
         self.Hauteur_puit = tk.Spinbox(self, from_=0, to=100, width=3)
         self.Hauteur_puit.grid(row=2, column=0, sticky='ne')
-
         self.hauteur_text = tk.Label(self, text='potentiel v :')
         self.hauteur_text.grid(row=2, column=0, sticky='nw')
 
@@ -48,11 +47,10 @@ class InterfaceGraphique(tk.Tk):
         # fonction pour afficher le graphe
         # self.modif_graphe()
 
-    # fonction permettant de passer s'un puit fini à infini
+    # fonction permettant de passer d'un puit fini à infini
     def infini(self):
 
         if self.var1.get():
-            v = 0
             self.Hauteur_puit.destroy()
             self.hauteur_text.destroy()
             self.puit_infini()
@@ -62,8 +60,11 @@ class InterfaceGraphique(tk.Tk):
             self.hauteur_text = tk.Label(self, text='potentiel v :')
             self.hauteur_text.grid(row=2, column=0, sticky='nw')
             v = self.Hauteur_puit.get()
+            self.ax.clear()
+            self.canvas.draw()
         return v
 
+    # fonction d'onde pour le puit infini
     def puit_infini(self):
         self.ax.clear()
         L = self.Largeurtext.get()
@@ -71,24 +72,29 @@ class InterfaceGraphique(tk.Tk):
         x = np.linspace(-int(L), int(L), 1000)
         psy = np.zeros_like(x)
         absol = np.abs(x) <= int(L)
-        for n in range(10):
+        for n in range(1, 10):
             E = (n * np.pi) ** 2 / (4 * int(L) ** 2)
             if n % 2 == 0:
-                psy[absol] = coeff * np.sin(n * np.pi * x[absol] / (2 * int(L)))
+                psy[absol] = (coeff *
+                              np.sin(n * np.pi * x[absol] / (2 * int(L))))
             else:
-                psy[absol] = coeff * np.cos(n * np.pi * x[absol] / (2 * int(L)))
+                psy[absol] = (coeff *
+                              np.cos(n * np.pi * x[absol] / (2 * int(L))))
             self.ax.plot(x, psy + E)
         self.canvas.draw()
 
     # fonction pour modifier le graphe en temps réel
     # def modif_graphe(self):
 
-    # fonction pour update les xlim
+    # fonction pour update les xlim et les fonction d'onde
+    # quand on touche aux boutons
     def update(self):
 
         a = self.Largeurtext.get()
         self.ax.set_xlim(-int(a)-2, int(a)+2)
-        self.canvas.draw()
+        if self.var1.get():
+            self.puit_infini()
+            self.canvas.draw()
 
 
 Interface = InterfaceGraphique()
