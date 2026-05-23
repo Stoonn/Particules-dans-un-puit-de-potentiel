@@ -15,8 +15,9 @@ class InterfaceGraphique(tk.Tk):
         self.grid_columnconfigure(1, weight=7)
 
         # ici ce sera la largeur a du puit
-        Largeurtext = tk.Spinbox(self, from_=0, to=100, width=5)
-        Largeurtext.grid(row=0, column=0, sticky='ne')
+        self.Largeurtext = tk.Spinbox(self, from_=0,
+                                      to=100, width=5, command=self.update)
+        self.Largeurtext.grid(row=0, column=0, sticky='ne')
 
         largeur = tk.Label(self, text='largeur a :')
         largeur.grid(row=0, column=0, sticky='nw')
@@ -49,6 +50,7 @@ class InterfaceGraphique(tk.Tk):
 
     # fonction permettant de passer s'un puit fini à infini
     def infini(self):
+
         if self.var1.get():
             v = 0
             self.Hauteur_puit.destroy()
@@ -63,6 +65,12 @@ class InterfaceGraphique(tk.Tk):
 
     # fonction pour modifier le graphe en temps réel
     # def modif_graphe(self):
+
+    # fonction pour update les xlim
+    def update(self):
+        a = self.Largeurtext.get()
+        self.ax.set_xlim(-int(a)-2, int(a)+2)
+        self.canvas.draw()
 
 
 Interface = InterfaceGraphique()
