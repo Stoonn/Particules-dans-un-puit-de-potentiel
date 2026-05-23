@@ -6,8 +6,11 @@ from matplotlib.figure import Figure
 
 class InterfaceGraphique(tk.Tk):
 
-    def __init__(self):
+    def __init__(self, n_max):
         tk.Tk.__init__(self)
+
+        # nombre max de niveau d'énergie voulu
+        self.n_max = n_max
 
         # Configuration de la grille
         self.grid_rowconfigure(0, weight=0)
@@ -70,7 +73,7 @@ class InterfaceGraphique(tk.Tk):
         x = np.linspace(-int(L), int(L), 1000)
         psy = np.zeros_like(x)
         absol = np.abs(x) <= int(L)
-        for n in range(1, 10):
+        for n in range(1, self.n_max+1):
             E = (n * np.pi) ** 2 / (4 * int(L) ** 2)
             if n % 2 == 0:
                 psy[absol] = (coeff *
@@ -95,5 +98,5 @@ class InterfaceGraphique(tk.Tk):
             self.canvas.draw()
 
 
-Interface = InterfaceGraphique()
+Interface = InterfaceGraphique(6)
 Interface.mainloop()
