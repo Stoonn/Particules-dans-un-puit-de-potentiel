@@ -48,7 +48,7 @@ class InterfaceGraphique(tk.Tk):
                                          rowspan=40, column=1, sticky='nsew')
 
         # fonction pour afficher le graphe
-        # self.modif_graphe()
+        # self.puit_fini()
 
     # fonction permettant de passer d'un puit fini à infini
     def infini(self):
@@ -84,8 +84,8 @@ class InterfaceGraphique(tk.Tk):
             self.ax.plot(x, psy + E)
         self.canvas.draw()
 
-    # fonction pour modifier le graphe en temps réel
-    # def modif_graphe(self):
+    # fonction pour le puit fini
+    # def puit_fini(self):
 
     # fonction pour update les xlim et les fonction d'onde
     # quand on touche aux boutons
