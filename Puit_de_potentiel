@@ -51,7 +51,6 @@ class InterfaceGraphique(tk.Tk):
     def infini(self):
 
         if self.var1.get():
-            v = 0
             self.Hauteur_puit.destroy()
             self.hauteur_text.destroy()
             self.puit_infini()
@@ -61,6 +60,8 @@ class InterfaceGraphique(tk.Tk):
             self.hauteur_text = tk.Label(self, text='potentiel v :')
             self.hauteur_text.grid(row=2, column=0, sticky='nw')
             v = self.Hauteur_puit.get()
+            self.ax.clear()
+            self.canvas.draw()
         return v
 
     # fonction d'onde pour le puit infini
@@ -85,7 +86,8 @@ class InterfaceGraphique(tk.Tk):
     # fonction pour modifier le graphe en temps réel
     # def modif_graphe(self):
 
-    # fonction pour update les xlim et les fonction d'onde quand on touche aux boutons
+    # fonction pour update les xlim et les fonction d'onde
+    # quand on touche aux boutons
     def update(self):
 
         a = self.Largeurtext.get()
