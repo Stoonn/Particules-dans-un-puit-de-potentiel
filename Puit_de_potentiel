@@ -39,6 +39,12 @@ class InterfaceGraphique(tk.Tk):
                                          command=self.infini)
         self.infinibout.grid(row=1, column=0, sticky='nw')
 
+        # Bouton permettant d'activer et désactiver la densité de proba
+        self.var2 = tk.BooleanVar()
+        self.probabout = tk.Checkbutton(self, text='densité de proba',
+                                        variable=self.var2, command=self.update)
+        self.probabout.grid(row=3, column=0, sticky='nw')
+
         # Bouton potentiel v
         self.Hauteur_puit = tk.Spinbox(self, from_=1, to=100,
                                        width=3, command=self.update_V)
@@ -154,15 +160,70 @@ class InterfaceGraphique(tk.Tk):
             self.ax.plot(x, psy + valeurs[n])
         self.canvas.draw()
 
+    # Fonction qui donne la densité de probabilité
+    # dans un puit fini
+
+    def proba(self):
+        self.ax.clear()
+        L = self.Largeur_puit.get()
+        x = np.linspace(-int(L) * 1.5, int(L) * 1.5, 1000)
+        region1 = x < -int(L)
+        region2 = np.abs(x) <= int(L)
+        region3 = x > int(L)
+        psy = np.zeros_like(x)
+        valeurs, parite = self.e_n()
+
+        for n in range(len(valeurs)):
+            if parite[n] == 'pair':
+
+                psy[region1] = (np.exp(self.k(valeurs[n]) * x[region1]))**2
+
+                psy[region2] = np.cos(self.q(valeurs[n]) * x[region2])**2
+
+                psy[region3] = (np.exp(self.k(valeurs[n]) * (-x[region3])))**2
+
+            elif parite[n] == 'impair':
+
+                psy[region1] = (np.exp(self.k(valeurs[n]) * x[region1]))**2
+
+                psy[region2] = np.sin(self.q(valeurs[n]) * x[region2])**2
+
+                psy[region3] = (np.exp(self.k(valeurs[n]) * (-x[region3])))**2
+
+            self.ax.plot(x, psy + valeurs[n])
+        self.canvas.draw()
+
+    # fonction d'onde pour la proba en puit infini
+    def proba_infini(self):
+        self.ax.clear()
+        L = self.Largeur_puit.get()
+        x = np.linspace(-int(L) * 1.5, int(L) * 1.5, 1000)
+        psy = np.zeros_like(x)
+        absol = np.abs(x) <= int(L)
+        for n in range(1, self.n_max+1):
+            E = (n * np.pi) ** 2 / (8 * int(L) ** 2)
+            if n % 2 == 0:
+                psy[absol] = (np.sin(n * np.pi * x[absol] / (2 * int(L))))**2
+            else:
+                psy[absol] = (np.cos(n * np.pi * x[absol] / (2 * int(L))))**2
+            self.ax.plot(x, psy + E)
+        self.canvas.draw()
+
     # fonction pour update les xlim et les fonction d'onde
     # quand on touche aux boutons
     def update(self):
         L = self.Largeur_puit.get()
         self.ax.set_xlim(-int(L)-2, int(L)+2)
         if self.var1.get():
-            self.puit_infini()
+            if self.var2.get():
+                self.proba_infini()
+            else:
+                self.puit_infini()
         else:
-            self.puit_fini()
+            if self.var2.get():
+                self.proba()
+            else:
+                self.puit_fini()
 
     def update_V(self):
         V = self.Hauteur_puit.get()
