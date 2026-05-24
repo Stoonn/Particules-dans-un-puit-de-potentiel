@@ -91,7 +91,6 @@ class InterfaceGraphique(tk.Tk):
 
     # fonction d'onde pour le puit infini
     def puit_infini(self):
-
         self.ax.clear()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
@@ -106,6 +105,7 @@ class InterfaceGraphique(tk.Tk):
             else:
                 psy[absol] = (1/(np.sqrt(int(L)))) * (np.cos(n * np.pi * x[absol] / (2 * int(L))))
             self.ax.plot(x, psy + E)
+        self.ax.set_ylim(0.2*(1 * np.pi) ** 2 / (8 * int(L) ** 2),(self.n_max * np.pi) ** 2 / (8 * int(L) ** 2)*1.1)
         self.canvas.draw()
 
     # fonctions pour le puit fini
@@ -169,10 +169,12 @@ class InterfaceGraphique(tk.Tk):
 
     # fonction du puit fini.
     def puit_fini(self):
-        self.ax.clear()
+        maxi = []
+        mini = []
+        self.ax.clear()  
         coefficients = self.coeff()
         L = self.Largeur_puit.get()
-        x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
+        x = np.linspace(-int(L) * 4, int(L) * 4, 3000)
         self.ax.axvline(int(L), color='grey', linestyle='--')
         self.ax.axvline(-int(L), color='grey', linestyle='--')
         region1 = x < -int(L)
@@ -180,7 +182,6 @@ class InterfaceGraphique(tk.Tk):
         region3 = x > int(L)
         psy = np.zeros_like(x)
         valeurs, parite = self.e_n()
-
         for n in range(len(valeurs)):
             if parite[n] == 'pair':
 
@@ -197,18 +198,21 @@ class InterfaceGraphique(tk.Tk):
                 psy[region2] = coefficients[n][1]*np.sin(self.q(valeurs[n]) * x[region2])
 
                 psy[region3] = coefficients[n][2]*(np.exp(self.k(valeurs[n]) * (-x[region3])))
-
+            
             self.ax.plot(x, psy + valeurs[n])
+            self.ax.axhline(valeurs[n],0.01,0.99, color = "black", linewidth = 0.7)
+            maxi.append(np.max(psy[region2]))
+            mini.append(np.min(psy[region1]))
+        self.ax.set_ylim(0.9*(np.min(mini)+valeurs[0]),1.1*(np.max(maxi)+valeurs[len(valeurs)-1]))
         self.canvas.draw()
 
-    # Fonction qui donne la densité de probabilité
-    # dans un puit fini
+    #fonction qui donne la densité de probabilité dans un puit fini
 
     def proba(self):
         coefficients = self.coeff()
         self.ax.clear()
         L = self.Largeur_puit.get()
-        x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
+        x = np.linspace(-int(L) * 4, int(L) * 4, 3000)
         self.ax.axvline(int(L), color='grey', linestyle='--')
         self.ax.axvline(-int(L), color='grey', linestyle='--')
         region1 = x < -int(L)
@@ -236,6 +240,7 @@ class InterfaceGraphique(tk.Tk):
 
             self.ax.plot(x, psy + valeurs[n])
             self.ax.fill_between(x, psy + valeurs[n], valeurs[n], alpha=0.2)
+            self.ax.axhline(valeurs[n],0.01,0.99, color = "black", linewidth = 0.7)
         self.canvas.draw()
 
     # fonction d'onde pour la proba en puit infini
@@ -276,7 +281,6 @@ class InterfaceGraphique(tk.Tk):
                 self.puit_fini()
 
     def update_V(self):
-
         V = self.Hauteur_puit.get()
         if self.var1.get():
             if self.var2.get():
@@ -292,5 +296,5 @@ class InterfaceGraphique(tk.Tk):
                 self.puit_fini()
 
 
-Interface = InterfaceGraphique(6, 1)
+Interface = InterfaceGraphique(10, 1)
 Interface.mainloop()
