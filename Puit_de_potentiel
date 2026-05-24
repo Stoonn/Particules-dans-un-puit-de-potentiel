@@ -84,7 +84,7 @@ class InterfaceGraphique(tk.Tk):
         psy = np.zeros_like(x)
         absol = np.abs(x) <= int(L)
         for n in range(1, self.n_max+1):
-            E = (n * np.pi) ** 2 / (4 * int(L) ** 2)
+            E = (n * np.pi) ** 2 / (8 * int(L) ** 2)
             if n % 2 == 0:
                 psy[absol] = (coeff *
                               np.sin(n * np.pi * x[absol] / (2 * int(L))))
@@ -125,7 +125,8 @@ class InterfaceGraphique(tk.Tk):
                     parite.append("impair")
         return valeurs, parite
 
-    # focniton du puit fini
+    # fonction du puit fini.
+    # Attention il manque tout les coeff devant chaque partie des fonctions !!
     def puit_fini(self):
         self.ax.clear()
         L = self.Largeur_puit.get()
@@ -139,27 +140,19 @@ class InterfaceGraphique(tk.Tk):
         for n in range(len(valeurs)):
             if parite[n] == 'pair':
 
-                psy[region1] = (np.cos(self.q(valeurs[n])*int(L)) *
-                                np.exp(self.k(valeurs[n])*int(L)) *
-                                np.exp(self.k(valeurs[n]) * x[region1]))
+                psy[region1] = (np.exp(self.k(valeurs[n]) * x[region1]))
 
                 psy[region2] = np.cos(self.q(valeurs[n]) * x[region2])
 
-                psy[region3] = (np.cos(self.q(valeurs[n])*int(L)) *
-                                np.exp(self.k(valeurs[n])*int(L)) *
-                                np.exp(self.k(valeurs[n]) * (-x[region3])))
+                psy[region3] = (np.exp(self.k(valeurs[n]) * (-x[region3])))
 
             elif parite[n] == 'impair':
 
-                psy[region1] = (np.sin(self.q(valeurs[n])*int(L)) *
-                                np.exp(self.k(valeurs[n])*int(L)) *
-                                np.exp(self.k(valeurs[n]) * x[region1]))
+                psy[region1] = (np.exp(self.k(valeurs[n]) * x[region1]))
 
                 psy[region2] = np.sin(self.q(valeurs[n]) * x[region2])
 
-                psy[region3] = (-np.sin(self.q(valeurs[n])*int(L)) *
-                                np.exp(self.k(valeurs[n])*int(L)) *
-                                np.exp(self.k(valeurs[n]) * (-x[region3])))
+                psy[region3] = (np.exp(self.k(valeurs[n]) * (-x[region3])))
 
             self.ax.plot(x, psy + valeurs[n])
         self.canvas.draw()
