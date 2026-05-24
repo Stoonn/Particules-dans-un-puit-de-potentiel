@@ -42,7 +42,8 @@ class InterfaceGraphique(tk.Tk):
         # Bouton permettant d'activer et désactiver la densité de proba
         self.var2 = tk.BooleanVar()
         self.probabout = tk.Checkbutton(self, text='densité de proba',
-                                        variable=self.var2, command=self.update)
+                                        variable=self.var2,
+                                        command=self.update)
         self.probabout.grid(row=3, column=0, sticky='nw')
 
         # Bouton potentiel v
@@ -99,9 +100,9 @@ class InterfaceGraphique(tk.Tk):
         for n in range(1, self.n_max+1):
             E = (n * np.pi) ** 2 / (8 * int(L) ** 2)
             if n % 2 == 0:
-                psy[absol] = (np.sin(n * np.pi * x[absol] / (2 * int(L))))
+                psy[absol] = (1/(np.sqrt(int(L)))) * (np.sin(n * np.pi * x[absol] / (2 * int(L))))
             else:
-                psy[absol] = (np.cos(n * np.pi * x[absol] / (2 * int(L))))
+                psy[absol] = (1/(np.sqrt(int(L)))) * (np.cos(n * np.pi * x[absol] / (2 * int(L))))
             self.ax.plot(x, psy + E)
         self.canvas.draw()
 
@@ -136,8 +137,8 @@ class InterfaceGraphique(tk.Tk):
                     valeurs.append(float(round(self.itv[i], 3)))
                     parite.append("impair")
         return valeurs, parite
-    
-    #calculs des coeffs des fonctions d'ondes
+
+    # calculs des coeffs des fonctions d'ondes
     def coeff(self):
         B1 = []
         B2 = []
@@ -146,19 +147,19 @@ class InterfaceGraphique(tk.Tk):
         for i in range(len(parite)):
             a = int(self.Largeur_puit.get())
             Ei = valeurs[i]
-            qi=self.q(Ei)
-            ki=self.k(Ei)
+            qi = self.q(Ei)
+            ki = self.k(Ei)
             if parite[i] == "pair":
                 norm = float(np.sqrt(a + np.sin(2*qi*a)/(2*qi) + np.cos(qi*a)**2 / ki))
-                B=round(1.0 / norm,4)
-                A=float(round(B * np.exp(ki*a) * np.cos(qi*a),4))
+                B = round(1.0 / norm, 4)
+                A = float(round(B * np.exp(ki*a) * np.cos(qi*a), 4))
                 B1.append(A)
                 B2.append(B)
                 B3.append(A)
             else:
                 norm = float(np.sqrt(a - np.sin(2*qi*a)/(2*qi) + np.sin(qi*a)**2 / ki))
-                B=round(1.0 / norm,4)
-                A=float(round(B * np.exp(ki*a) * np.sin(qi*a),4))
+                B = round(1.0 / norm, 4)
+                A = float(round(B * np.exp(ki*a) * np.sin(qi*a), 4))
                 B1.append(-A)
                 B2.append(B)
                 B3.append(A)
@@ -242,9 +243,9 @@ class InterfaceGraphique(tk.Tk):
         for n in range(1, self.n_max+1):
             E = (n * np.pi) ** 2 / (8 * int(L) ** 2)
             if n % 2 == 0:
-                psy[absol] = (np.sin(n * np.pi * x[absol] / (2 * int(L))))**2
+                psy[absol] = ((1/(np.sqrt(int(L)))) * (np.sin(n * np.pi * x[absol] / (2 * int(L)))))**2
             else:
-                psy[absol] = (np.cos(n * np.pi * x[absol] / (2 * int(L))))**2
+                psy[absol] = ((1/(np.sqrt(int(L)))) * (np.cos(n * np.pi * x[absol] / (2 * int(L)))))**2
             self.ax.plot(x, psy + E)
             self.ax.fill_between(x, psy + E, E, alpha=0.2)
         self.canvas.draw()
