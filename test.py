@@ -17,10 +17,16 @@ def e_n():
     Ei = [q(i)/np.tan(q(i)*a) + k(i) for i in itv]
     for i in range(len(itv)-1):
         if Ep[i]*Ep[i+1] < 0:
-            valeurs.append((abs(Ep[i])+abs(Ep[i+1]))/2)
-            parite.append("pair")
+            if abs(Ep[i]-Ep[i+1])> 10:
+                continue
+            else:
+                valeurs.append(float(round(itv[i],3)))
+                parite.append("pair")
         elif Ei[i]*Ei[i+1] < 0:
-            valeurs.append((abs(Ei[i])+abs(Ei[i+1]))/2)
-            parite.append("impair")
+            if abs(Ei[i]-Ei[i+1])> 10:
+                continue
+            else :
+                valeurs.append(float(round(itv[i],3)))
+                parite.append("impair")
     return valeurs,parite
 print(len(e_n()[1]),e_n())
