@@ -127,11 +127,38 @@ class InterfaceGraphique(tk.Tk):
                     valeurs.append(float(round(self.itv[i], 3)))
                     parite.append("impair")
         return valeurs, parite
+    
+    #calculs des coeffs des fonctions d'ondes
+    def coeff(self):
+        B1 = []
+        B2 = []
+        B3 = []
+        valeurs, parite = self.e_n()
+        for i in range(len(parite)):
+            a = int(self.Largeur_puit.get())
+            Ei = valeurs[i]
+            qi=self.q(Ei)
+            ki=self.k(Ei)
+            if parite[i] == "pair":
+                norm = float(np.sqrt(a + np.sin(2*qi*a)/(2*qi) + np.cos(qi*a)**2 / ki))
+                B=round(1.0 / norm,4)
+                A=float(round(B * np.exp(ki*a) * np.cos(qi*a),4))
+                B1.append(A)
+                B2.append(B)
+                B3.append(A)
+            else:
+                norm = float(np.sqrt(a - np.sin(2*qi*a)/(2*qi) + np.sin(qi*a)**2 / ki))
+                B=round(1.0 / norm,4)
+                A=float(round(B * np.exp(ki*a) * np.sin(qi*a),4))
+                B1.append(-A)
+                B2.append(B)
+                B3.append(A)
+        return list(zip(B1, B2, B3))
 
     # fonction du puit fini.
-    # Attention il manque tout les coeff devant chaque partie des fonctions !!
     def puit_fini(self):
         self.ax.clear()
+        coefficients = self.coeff()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 1.5, int(L) * 1.5, 1000)
         region1 = x < -int(L)
@@ -143,19 +170,19 @@ class InterfaceGraphique(tk.Tk):
         for n in range(len(valeurs)):
             if parite[n] == 'pair':
 
-                psy[region1] = (np.exp(self.k(valeurs[n]) * x[region1]))
+                psy[region1] = coefficients[n][0]*(np.exp(self.k(valeurs[n]) * x[region1]))
 
-                psy[region2] = np.cos(self.q(valeurs[n]) * x[region2])
+                psy[region2] = coefficients[n][1]*np.cos(self.q(valeurs[n]) * x[region2])
 
-                psy[region3] = (np.exp(self.k(valeurs[n]) * (-x[region3])))
+                psy[region3] = coefficients[n][2]*(np.exp(self.k(valeurs[n]) * (-x[region3])))
 
             elif parite[n] == 'impair':
 
-                psy[region1] = (np.exp(self.k(valeurs[n]) * x[region1]))
+                psy[region1] = coefficients[n][0]*(np.exp(self.k(valeurs[n]) * x[region1]))
 
-                psy[region2] = np.sin(self.q(valeurs[n]) * x[region2])
+                psy[region2] = coefficients[n][1]*np.sin(self.q(valeurs[n]) * x[region2])
 
-                psy[region3] = (np.exp(self.k(valeurs[n]) * (-x[region3])))
+                psy[region3] = coefficients[n][2]*(np.exp(self.k(valeurs[n]) * (-x[region3])))
 
             self.ax.plot(x, psy + valeurs[n])
         self.canvas.draw()
