@@ -78,7 +78,7 @@ class InterfaceGraphique(tk.Tk):
                 self.puit_infini()
         else:
             self.Hauteur_puit = tk.Spinbox(self, from_=1, to=100,
-                                           width=3, command=self.update_V)
+                                           width=3, command=self.update)
             self.Hauteur_puit.grid(row=2, column=0, sticky='ne')
             self.hauteur_text = tk.Label(self, text='potentiel v :')
             self.hauteur_text.grid(row=2, column=0, sticky='nw')
@@ -284,6 +284,7 @@ class InterfaceGraphique(tk.Tk):
                 self.proba()
             else:
                 self.puit_fini()
+
 
 Interface = InterfaceGraphique(10)
 Interface.mainloop()
