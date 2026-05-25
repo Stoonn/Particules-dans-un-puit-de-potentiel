@@ -83,8 +83,6 @@ class InterfaceGraphique(tk.Tk):
             self.hauteur_text = tk.Label(self, text='potentiel v :')
             self.hauteur_text.grid(row=2, column=0, sticky='nw')
             if self.var2.get():
-                self.V_0 = int(self.Hauteur_puit.get())
-                self.ax.set_ylim(0, self.V_0)
                 self.proba()
             else:
                 self.puit_fini()
