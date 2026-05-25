@@ -9,13 +9,10 @@ class InterfaceGraphique(tk.Tk):
     def quit_fullscreen(self, event):
         self.attributes("-fullscreen", False)
 
-    def __init__(self, n_max, V_0):
+    def __init__(self, n_max):
         tk.Tk.__init__(self)
 
         # variables de départs
-        self.hbar = 1
-        self.V_0 = V_0
-        self.itv = np.linspace(1e-6, V_0-1e-6, 10000)
         self.m = 1
         self.hbar = 1
 
@@ -76,7 +73,7 @@ class InterfaceGraphique(tk.Tk):
 
         # Bouton potentiel v
         self.Hauteur_puit = tk.Spinbox(self.control_frame, from_=1, to=100,
-                                       width=3, command=self.refresh_V)
+                                       width=3, command=self.refresh)
         self.Hauteur_puit.grid(row=2, column=0, sticky='ne')
         self.hauteur_text = tk.Label(self.control_frame, text='potentiel v :')
         self.hauteur_text.grid(row=2, column=0, sticky='nw')
@@ -107,7 +104,7 @@ class InterfaceGraphique(tk.Tk):
                 self.puit_infini()
         else:
             self.Hauteur_puit = tk.Spinbox(self.control_frame, from_=1, to=100,
-                                           width=3, command=self.refresh_V)
+                                           width=3, command=self.refresh)
             self.Hauteur_puit.grid(row=2, column=0, sticky='ne')
             self.hauteur_text = tk.Label(self.control_frame, text='potentiel v :')
             self.hauteur_text.grid(row=2, column=0, sticky='nw')
@@ -122,6 +119,8 @@ class InterfaceGraphique(tk.Tk):
         self.ax.clear()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
+        self.ax.axvline(int(L), color='grey', linestyle='--')
+        self.ax.axvline(-int(L), color='grey', linestyle='--')
         psy = np.zeros_like(x)
         absol = np.abs(x) <= int(L)
         for n in range(1, self.n_max+1):
@@ -131,6 +130,7 @@ class InterfaceGraphique(tk.Tk):
             else:
                 psy[absol] = (1/(np.sqrt(int(L)))) * (np.cos(n * np.pi * x[absol] / (2 * int(L))))
             self.ax.plot(x, psy + E)
+        self.ax.set_ylim(0.2*(1 * np.pi) ** 2 / (8 * int(L) ** 2), (self.n_max * np.pi) ** 2 / (8 * int(L) ** 2)*1.1)
         self.canvas.draw()
 
     # fonctions pour le puit fini
@@ -142,7 +142,8 @@ class InterfaceGraphique(tk.Tk):
 
     # dichotimie pour trouver les En
     def e_n(self):
-
+        self.V_0 = int(self.Hauteur_puit.get())
+        self.itv = np.linspace(1e-6, self.V_0-1e-6, 10000)
         L = self.Largeur_puit.get()
         valeurs = []
         parite = []
@@ -194,10 +195,14 @@ class InterfaceGraphique(tk.Tk):
 
     # fonction du puit fini.
     def puit_fini(self):
+        maxi = []
+        mini = []
         self.ax.clear()
         coefficients = self.coeff()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
+        self.ax.axvline(int(L), color='grey', linestyle='--')
+        self.ax.axvline(-int(L), color='grey', linestyle='--')
         region1 = x < -int(L)
         region2 = np.abs(x) <= int(L)
         region3 = x > int(L)
@@ -222,6 +227,10 @@ class InterfaceGraphique(tk.Tk):
                 psy[region3] = coefficients[n][2]*(np.exp(self.k(valeurs[n]) * (-x[region3])))
 
             self.ax.plot(x, psy + valeurs[n])
+            self.ax.axhline(valeurs[n], 0.01, 0.99, color="black", linewidth=0.7)
+            maxi.append(np.max(psy[region2]))
+            mini.append(np.min(psy[region1]))
+        self.ax.set_ylim(0.9*(np.min(mini)+valeurs[0]), 1.1*(np.max(maxi)+valeurs[len(valeurs)-1]))
         self.canvas.draw()
 
     # Fonction qui donne la densité de probabilité
@@ -234,6 +243,8 @@ class InterfaceGraphique(tk.Tk):
         self.ax.clear()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
+        self.ax.axvline(int(L), color='grey', linestyle='--')
+        self.ax.axvline(-int(L), color='grey', linestyle='--')
         region1 = x < -int(L)
         region2 = np.abs(x) <= int(L)
         region3 = x > int(L)
@@ -260,8 +271,9 @@ class InterfaceGraphique(tk.Tk):
             self.ax.plot(x, psy + valeurs[n])
             self.ax.fill_between(x, psy + valeurs[n], valeurs[n], alpha=0.2)
             self.ax.axhline(valeurs[n], 0.01, 0.99, color="black", linewidth=0.7)
-        self.V_0 = int(self.Hauteur_puit.get())
-        self.ax.set_ylim(0, self.V_0)
+            maxi.append(np.max(psy[region2]))
+            mini.append(np.min(psy[region1]))
+        self.ax.set_ylim(0.9*(np.min(mini)+valeurs[0]), 1.1*(np.max(maxi)+valeurs[len(valeurs)-1]))
         self.canvas.draw()
 
     # fonction d'onde pour la proba en puit infini
@@ -270,6 +282,8 @@ class InterfaceGraphique(tk.Tk):
         self.ax.clear()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
+        self.ax.axvline(int(L), color='grey', linestyle='--')
+        self.ax.axvline(-int(L), color='grey', linestyle='--')
         psy = np.zeros_like(x)
         absol = np.abs(x) <= int(L)
         for n in range(1, self.n_max+1):
@@ -280,14 +294,12 @@ class InterfaceGraphique(tk.Tk):
                 psy[absol] = ((1/(np.sqrt(int(L)))) * (np.cos(n * np.pi * x[absol] / (2 * int(L)))))**2
             self.ax.plot(x, psy + E)
             self.ax.fill_between(x, psy + E, E, alpha=0.2)
+        self.ax.set_ylim(0.2*(1 * np.pi) ** 2 / (8 * int(L) ** 2), (self.n_max * np.pi) ** 2 / (8 * int(L) ** 2)*1.1)
         self.canvas.draw()
 
     # fonction pour update les xlim et les fonction d'onde
     # quand on touche aux boutons
     def refresh(self):
-
-        L = self.Largeur_puit.get()
-        self.ax.set_xlim(-int(L)-2, int(L)+2)
         if self.var1.get():
             if self.var2.get():
                 self.proba_infini()
@@ -299,15 +311,6 @@ class InterfaceGraphique(tk.Tk):
             else:
                 self.puit_fini()
 
-    def refresh_V(self):
 
-        self.V_0 = int(self.Hauteur_puit.get())
-        self.ax.set_ylim(0, self.V_0)
-        if self.var2.get():
-            self.proba()
-        else:
-            self.puit_fini()
-
-
-Interface = InterfaceGraphique(6, 1)
+Interface = InterfaceGraphique(6)
 Interface.mainloop()
