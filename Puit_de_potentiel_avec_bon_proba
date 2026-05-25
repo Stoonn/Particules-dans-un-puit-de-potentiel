@@ -46,7 +46,7 @@ class InterfaceGraphique(tk.Tk):
 
         # Bouton potentiel v
         self.Hauteur_puit = tk.Spinbox(self, from_=1, to=100,
-                                       width=3, command=self.update_V)
+                                       width=3, command=self.update)
         self.Hauteur_puit.grid(row=2, column=0, sticky='ne')
         self.hauteur_text = tk.Label(self, text='potentiel v :')
         self.hauteur_text.grid(row=2, column=0, sticky='nw')
@@ -210,6 +210,8 @@ class InterfaceGraphique(tk.Tk):
     # fonction qui donne la densité de probabilité dans un puit fini
 
     def proba(self):
+        maxi = []
+        mini = []
         coefficients = self.coeff()
         self.ax.clear()
         L = self.Largeur_puit.get()
@@ -242,8 +244,9 @@ class InterfaceGraphique(tk.Tk):
             self.ax.plot(x, psy + valeurs[n])
             self.ax.fill_between(x, psy + valeurs[n], valeurs[n], alpha=0.2)
             self.ax.axhline(valeurs[n], 0.01, 0.99, color="black", linewidth=0.7)
-        self.V_0 = int(self.Hauteur_puit.get())
-        self.ax.set_ylim(0, self.V_0)
+            maxi.append(np.max(psy[region2]))
+            mini.append(np.min(psy[region1]))
+        self.ax.set_ylim(0.9*(np.min(mini)+valeurs[0]), 1.1*(np.max(maxi)+valeurs[len(valeurs)-1]))
         self.canvas.draw()
 
     # fonction d'onde pour la proba en puit infini
@@ -281,16 +284,6 @@ class InterfaceGraphique(tk.Tk):
                 self.proba()
             else:
                 self.puit_fini()
-
-    def update_V(self):
-
-        self.V_0 = int(self.Hauteur_puit.get())
-        self.ax.set_ylim(0, self.V_0)
-        if self.var2.get():
-            self.proba()
-        else:
-            self.puit_fini()
-
 
 Interface = InterfaceGraphique(10)
 Interface.mainloop()
