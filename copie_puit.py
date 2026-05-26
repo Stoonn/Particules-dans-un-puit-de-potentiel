@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 from matplotlib.figure import Figure
@@ -18,6 +19,15 @@ class InterfaceGraphique(tk.Tk):
         self.itv = np.linspace(1e-6, V_0-1e-6, 10000)
         self.m = 1
         self.hbar = 1
+        # theme graphique
+        style = ttk.Style()
+        style.theme_use('clam')
+        style.configure("Phos.Horizontal.TScale",
+                        background='#050709',
+                        troughcolor= '#2B0136',
+                        sliderthickness=16,
+                        sliderrelief="flat",
+                        borderwidth=0)     
 
         # nombre max de niveau d'énergie voulu
         self.n_max = n_max
@@ -33,13 +43,13 @@ class InterfaceGraphique(tk.Tk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=7)
 
-        self.control_frame = tk.Frame(self, bg="red", bd=2, relief="solid")
+        self.control_frame = tk.Frame(self, bg="#0c1018", bd=2, relief="solid")
         self.control_frame.grid(row = 1, column = 0, sticky = 'nsew')
-        self.panel_frame = tk.Frame(self, bg="pink", bd=2, relief="solid")
+        self.panel_frame = tk.Frame(self, bg="#040a06", bd=2, relief="solid")
         self.panel_frame.grid(row = 1, column = 1, sticky = 'nsew')
-        self.headcontrol_frame = tk.Frame(self, bg="green", bd=2, relief="solid")
+        self.headcontrol_frame = tk.Frame(self, bg="#080b0f", bd=2, relief="solid")
         self.headcontrol_frame.grid(row = 0, column = 0, sticky = 'nsew')
-        self.headpanel_frame = tk.Frame(self, bg="grey", bd=2, relief="solid")
+        self.headpanel_frame = tk.Frame(self, bg="#080b0f", bd=2, relief="solid")
         self.headpanel_frame.grid(row = 0, column = 1, sticky = 'nsew')
     
         # les labels des différentes frames
@@ -52,9 +62,10 @@ class InterfaceGraphique(tk.Tk):
 
 
         # ici ce sera la largeur a du puit
-        self.Largeur_puit = tk.Spinbox(self.control_frame, from_=1,
-                                       to=100, width=5, command=self.refresh)
-        self.Largeur_puit.grid(row = 0, column = 0, sticky = 'ne')
+        self.hauteur_var = tk.StringVar(value='1')
+        self.Largeur_puit = ttk.Scale(self.control_frame, from_=1,
+                                       to=100, length = 150, orient="horizontal", style="Phos.Horizontal.TScale", command=self.refresh)
+        self.Largeur_puit.grid(row = 1, column = 0, sticky = '')
 
         largeur = tk.Label(self.control_frame, text='largeur a :')
         largeur.grid(row = 0, column = 0, sticky = 'nw')
@@ -64,22 +75,21 @@ class InterfaceGraphique(tk.Tk):
         self.var1 = tk.BooleanVar()
         self.infinibout = tk.Checkbutton(self.control_frame, text='potentiel infini',
                                          variable=self.var1,
-                                         command=self.infini)
-        self.infinibout.grid(row=1, column=0, sticky='nw')
+                                         command=lambda: self.infini())
+        self.infinibout.grid(row=2, column=0, sticky='nw')
 
         # Bouton permettant d'activer et désactiver la densité de proba
         self.var2 = tk.BooleanVar()
         self.probabout = tk.Checkbutton(self.control_frame, text='densité de proba',
                                         variable=self.var2,
-                                        command=self.refresh)
+                                        command=lambda: self.refresh())
         self.probabout.grid(row=3, column=0, sticky='nw')
 
         # Bouton potentiel v
-        self.Hauteur_puit = tk.Spinbox(self.control_frame, from_=1, to=100,
-                                       width=3, command=self.refresh_V)
-        self.Hauteur_puit.grid(row=2, column=0, sticky='ne')
+        self.Hauteur_puit = ttk.Scale(self.control_frame, from_=1, to=100, length = 150, orient="horizontal", style="Phos.Horizontal.TScale", command=self.refresh_V)
+        self.Hauteur_puit.grid(row=5, column=0, sticky='')
         self.hauteur_text = tk.Label(self.control_frame, text='potentiel v :')
-        self.hauteur_text.grid(row=2, column=0, sticky='nw')
+        self.hauteur_text.grid(row=4, column=0, sticky='nw')
 
         # figure matplotlib
         self.fig = Figure()
@@ -284,7 +294,7 @@ class InterfaceGraphique(tk.Tk):
 
     # fonction pour update les xlim et les fonction d'onde
     # quand on touche aux boutons
-    def refresh(self):
+    def refresh(self, *args):
 
         L = self.Largeur_puit.get()
         self.ax.set_xlim(-int(L)-2, int(L)+2)
@@ -299,7 +309,7 @@ class InterfaceGraphique(tk.Tk):
             else:
                 self.puit_fini()
 
-    def refresh_V(self):
+    def refresh_V(self, *args):
 
         self.V_0 = int(self.Hauteur_puit.get())
         self.ax.set_ylim(0, self.V_0)
