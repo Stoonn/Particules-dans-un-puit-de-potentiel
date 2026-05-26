@@ -6,13 +6,10 @@ from matplotlib.figure import Figure
 
 class InterfaceGraphique(tk.Tk):
 
-    def __init__(self, n_max, V_0):
+    def __init__(self, n_max):
         tk.Tk.__init__(self)
 
         # variables de départs
-        self.hbar = 1
-        self.V_0 = V_0
-        self.itv = np.linspace(1e-6, V_0-1e-6, 10000)
         self.m = 1
         self.hbar = 1
 
@@ -39,6 +36,11 @@ class InterfaceGraphique(tk.Tk):
                                          command=self.infini)
         self.infinibout.grid(row=1, column=0, sticky='nw')
 
+        #bouton permettant de mettre en mouvement dans le temps
+        self.var3 = tk.BooleanVar()
+        self.temporel = tk.Checkbutton(self, text='potentiel infini',
+                                         variable=self.var3)
+
         # Bouton permettant d'activer et désactiver la densité de proba
         self.var2 = tk.BooleanVar()
         self.probabout = tk.Checkbutton(self, text='densité de proba',
@@ -48,7 +50,7 @@ class InterfaceGraphique(tk.Tk):
 
         # Bouton potentiel v
         self.Hauteur_puit = tk.Spinbox(self, from_=1, to=100,
-                                       width=3, command=self.update_V)
+                                       width=3, command=self.update)
         self.Hauteur_puit.grid(row=2, column=0, sticky='ne')
         self.hauteur_text = tk.Label(self, text='potentiel v :')
         self.hauteur_text.grid(row=2, column=0, sticky='nw')
@@ -65,8 +67,7 @@ class InterfaceGraphique(tk.Tk):
         # fonction pour afficher le graphe
         self.puit_fini()
 
-    # fonction permettant de passer d'un puit fini à infini
-    # et faire disparaitre la spinbox de potenitel
+    # fonction permettant de passer d'un puit fini à infini et faire disparaitre la spinbox de potenitel
     def infini(self):
 
         if self.var1.get():
@@ -80,7 +81,7 @@ class InterfaceGraphique(tk.Tk):
                 self.puit_infini()
         else:
             self.Hauteur_puit = tk.Spinbox(self, from_=1, to=100,
-                                           width=3, command=self.update_V)
+                                           width=3, command=self.update)
             self.Hauteur_puit.grid(row=2, column=0, sticky='ne')
             self.hauteur_text = tk.Label(self, text='potentiel v :')
             self.hauteur_text.grid(row=2, column=0, sticky='nw')
@@ -95,6 +96,8 @@ class InterfaceGraphique(tk.Tk):
         self.ax.clear()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
+        self.ax.axvline(int(L), color='grey', linestyle='--')
+        self.ax.axvline(-int(L), color='grey', linestyle='--')
         psy = np.zeros_like(x)
         absol = np.abs(x) <= int(L)
         for n in range(1, self.n_max+1):
@@ -104,6 +107,8 @@ class InterfaceGraphique(tk.Tk):
             else:
                 psy[absol] = (1/(np.sqrt(int(L)))) * (np.cos(n * np.pi * x[absol] / (2 * int(L))))
             self.ax.plot(x, psy + E)
+        self.ax.set_ylim(0.2*(1 * np.pi) ** 2 / (8 * int(L) ** 2),
+                         (self.n_max * np.pi) ** 2 / (8 * int(L) ** 2)*1.1)
         self.canvas.draw()
 
     # fonctions pour le puit fini
@@ -115,18 +120,17 @@ class InterfaceGraphique(tk.Tk):
 
     # dichotimie pour trouver les En
     def e_n(self):
-
+        self.V_0 = int(self.Hauteur_puit.get())
+        self.itv = np.linspace(1e-6, self.V_0-1e-6, 10000)
         L = self.Largeur_puit.get()
         valeurs = []
         parite = []
-        Ep = [self.q(i) * np.tan(self.q(i) *
-                                 int(L)) - self.k(i) for i in self.itv]
-        Ei = [self.q(i) / np.tan(self.q(i) *
-                                 int(L)) + self.k(i) for i in self.itv]
+        Ep = [self.q(i) * np.tan(self.q(i) * int(L)) - self.k(i) for i in self.itv]
+        Ei = [self.q(i) / np.tan(self.q(i) * int(L)) + self.k(i) for i in self.itv]
         for i in range(len(self.itv)-1):
             if Ep[i]*Ep[i+1] < 0:
-                if abs(Ep[i]-Ep[i+1]) > 10:
-                    continue
+                if abs(Ep[i]-Ep[i+1]) > 10: #tan est discontinue donc on regarde si c'est pas un point de discontinuité
+                    continue 
                 else:
                     valeurs.append(float(round(self.itv[i], 3)))
                     parite.append("pair")
@@ -167,10 +171,14 @@ class InterfaceGraphique(tk.Tk):
 
     # fonction du puit fini.
     def puit_fini(self):
+        maxi = []
+        mini = []
         self.ax.clear()
         coefficients = self.coeff()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
+        self.ax.axvline(int(L), color='grey', linestyle='--')
+        self.ax.axvline(-int(L), color='grey', linestyle='--')
         region1 = x < -int(L)
         region2 = np.abs(x) <= int(L)
         region3 = x > int(L)
@@ -195,16 +203,25 @@ class InterfaceGraphique(tk.Tk):
                 psy[region3] = coefficients[n][2]*(np.exp(self.k(valeurs[n]) * (-x[region3])))
 
             self.ax.plot(x, psy + valeurs[n])
+            self.ax.axhline(valeurs[n], 0.01, 0.99, color="black", linewidth=0.7)
+            #liste pour adapter la taille des graphs en fonctions de comment sont grosses les courbes
+            maxi.append(np.max(psy[region2]))
+            mini.append(np.min(psy[region1]))
+        self.ax.set_ylim(0.9*(np.min(mini)+valeurs[0]),
+                         1.1*(np.max(maxi)+valeurs[len(valeurs)-1]))
         self.canvas.draw()
 
-    # Fonction qui donne la densité de probabilité
-    # dans un puit fini
+    # Fonction qui donne la densité de probabilité dans un puit fini
 
     def proba(self):
+        maxi = []
+        mini = []
         coefficients = self.coeff()
         self.ax.clear()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
+        self.ax.axvline(int(L), color='grey', linestyle='--')
+        self.ax.axvline(-int(L), color='grey', linestyle='--')
         region1 = x < -int(L)
         region2 = np.abs(x) <= int(L)
         region3 = x > int(L)
@@ -230,6 +247,12 @@ class InterfaceGraphique(tk.Tk):
 
             self.ax.plot(x, psy + valeurs[n])
             self.ax.fill_between(x, psy + valeurs[n], valeurs[n], alpha=0.2)
+            self.ax.axhline(valeurs[n], 0.01, 0.99, color="black",
+                            linewidth=0.7)
+            maxi.append(np.max(psy[region2]))
+            mini.append(np.min(psy[region1]))
+        self.ax.set_ylim(0.9*(np.min(mini)+valeurs[0]),
+                         1.1*(np.max(maxi)+valeurs[len(valeurs)-1]))
         self.canvas.draw()
 
     # fonction d'onde pour la proba en puit infini
@@ -238,6 +261,8 @@ class InterfaceGraphique(tk.Tk):
         self.ax.clear()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
+        self.ax.axvline(int(L), color='grey', linestyle='--')
+        self.ax.axvline(-int(L), color='grey', linestyle='--')
         psy = np.zeros_like(x)
         absol = np.abs(x) <= int(L)
         for n in range(1, self.n_max+1):
@@ -248,14 +273,13 @@ class InterfaceGraphique(tk.Tk):
                 psy[absol] = ((1/(np.sqrt(int(L)))) * (np.cos(n * np.pi * x[absol] / (2 * int(L)))))**2
             self.ax.plot(x, psy + E)
             self.ax.fill_between(x, psy + E, E, alpha=0.2)
+        self.ax.set_ylim(0.2*(1 * np.pi) ** 2 / (8 * int(L) ** 2),
+                         (self.n_max * np.pi) ** 2 / (8 * int(L) ** 2)*1.1)
         self.canvas.draw()
 
-    # fonction pour update les xlim et les fonction d'onde
-    # quand on touche aux boutons
+    # fonction pour update les xlim et les fonction d'onde quand on touche aux boutons
     def update(self):
 
-        L = self.Largeur_puit.get()
-        self.ax.set_xlim(-int(L)-2, int(L)+2)
         if self.var1.get():
             if self.var2.get():
                 self.proba_infini()
@@ -267,22 +291,10 @@ class InterfaceGraphique(tk.Tk):
             else:
                 self.puit_fini()
 
-    def update_V(self):
-
-        V = self.Hauteur_puit.get()
-        if self.var1.get():
-            if self.var2.get():
-                self.proba_infini()
-            else:
-                self.puit_infini()
-        else:
-            self.V_0 = int(V)
-            self.ax.set_ylim(0, int(V))
-            if self.var2.get():
-                self.proba()
-            else:
-                self.puit_fini()
 
 
-Interface = InterfaceGraphique(6, 1)
+
+
+
+Interface = InterfaceGraphique(10)
 Interface.mainloop()
