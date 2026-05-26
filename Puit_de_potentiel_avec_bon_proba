@@ -36,6 +36,11 @@ class InterfaceGraphique(tk.Tk):
                                          command=self.infini)
         self.infinibout.grid(row=1, column=0, sticky='nw')
 
+        #bouton permettant de mettre en mouvement dans le temps
+        self.var3 = tk.BooleanVar()
+        self.temporel = tk.Checkbutton(self, text='potentiel infini',
+                                         variable=self.var3)
+
         # Bouton permettant d'activer et désactiver la densité de proba
         self.var2 = tk.BooleanVar()
         self.probabout = tk.Checkbutton(self, text='densité de proba',
@@ -62,8 +67,7 @@ class InterfaceGraphique(tk.Tk):
         # fonction pour afficher le graphe
         self.puit_fini()
 
-    # fonction permettant de passer d'un puit fini à infini
-    # et faire disparaitre la spinbox de potenitel
+    # fonction permettant de passer d'un puit fini à infini et faire disparaitre la spinbox de potenitel
     def infini(self):
 
         if self.var1.get():
@@ -120,14 +124,12 @@ class InterfaceGraphique(tk.Tk):
         L = self.Largeur_puit.get()
         valeurs = []
         parite = []
-        Ep = [self.q(i) * np.tan(self.q(i) *
-                                 int(L)) - self.k(i) for i in self.itv]
-        Ei = [self.q(i) / np.tan(self.q(i) *
-                                 int(L)) + self.k(i) for i in self.itv]
+        Ep = [self.q(i) * np.tan(self.q(i) * int(L)) - self.k(i) for i in self.itv]
+        Ei = [self.q(i) / np.tan(self.q(i) * int(L)) + self.k(i) for i in self.itv]
         for i in range(len(self.itv)-1):
             if Ep[i]*Ep[i+1] < 0:
-                if abs(Ep[i]-Ep[i+1]) > 10:
-                    continue
+                if abs(Ep[i]-Ep[i+1]) > 10: #tan est discontinue donc on regarde si c'est pas un point de discontinuité
+                    continue 
                 else:
                     valeurs.append(float(round(self.itv[i], 3)))
                     parite.append("pair")
@@ -201,13 +203,13 @@ class InterfaceGraphique(tk.Tk):
 
             self.ax.plot(x, psy + valeurs[n])
             self.ax.axhline(valeurs[n], 0.01, 0.99, color="black", linewidth=0.7)
+            #liste pour adapter la taille des graphs en fonctions de comment sont grosses les courbes
             maxi.append(np.max(psy[region2]))
             mini.append(np.min(psy[region1]))
         self.ax.set_ylim(0.9*(np.min(mini)+valeurs[0]), 1.1*(np.max(maxi)+valeurs[len(valeurs)-1]))
         self.canvas.draw()
 
-    # Fonction qui donne la densité de probabilité
-    # dans un puit fini
+    # Fonction qui donne la densité de probabilité dans un puit fini
 
     def proba(self):
         maxi = []
@@ -270,8 +272,7 @@ class InterfaceGraphique(tk.Tk):
         self.ax.set_ylim(0.2*(1 * np.pi) ** 2 / (8 * int(L) ** 2), (self.n_max * np.pi) ** 2 / (8 * int(L) ** 2)*1.1)
         self.canvas.draw()
 
-    # fonction pour update les xlim et les fonction d'onde
-    # quand on touche aux boutons
+    # fonction pour update les xlim et les fonction d'onde quand on touche aux boutons
     def update(self):
 
         if self.var1.get():
@@ -284,6 +285,10 @@ class InterfaceGraphique(tk.Tk):
                 self.proba()
             else:
                 self.puit_fini()
+
+
+
+
 
 
 Interface = InterfaceGraphique(10)
