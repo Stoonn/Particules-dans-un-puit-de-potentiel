@@ -103,7 +103,8 @@ class InterfaceGraphique(tk.Tk):
             else:
                 psy[absol] = (1/(np.sqrt(int(L)))) * (np.cos(n * np.pi * x[absol] / (2 * int(L))))
             self.ax.plot(x, psy + E)
-        self.ax.set_ylim(0.2*(1 * np.pi) ** 2 / (8 * int(L) ** 2), (self.n_max * np.pi) ** 2 / (8 * int(L) ** 2)*1.1)
+        self.ax.set_ylim(0.2*(1 * np.pi) ** 2 / (8 * int(L) ** 2),
+                         (self.n_max * np.pi) ** 2 / (8 * int(L) ** 2)*1.1)
         self.canvas.draw()
 
     # fonctions pour le puit fini
@@ -200,10 +201,12 @@ class InterfaceGraphique(tk.Tk):
                 psy[region3] = coefficients[n][2]*(np.exp(self.k(valeurs[n]) * (-x[region3])))
 
             self.ax.plot(x, psy + valeurs[n])
-            self.ax.axhline(valeurs[n], 0.01, 0.99, color="black", linewidth=0.7)
+            self.ax.axhline(valeurs[n], 0.01, 0.99, color="black",
+                            linewidth=0.7)
             maxi.append(np.max(psy[region2]))
             mini.append(np.min(psy[region1]))
-        self.ax.set_ylim(0.9*(np.min(mini)+valeurs[0]), 1.1*(np.max(maxi)+valeurs[len(valeurs)-1]))
+        self.ax.set_ylim(0.9*(np.min(mini)+valeurs[0]),
+                         1.1*(np.max(maxi)+valeurs[len(valeurs)-1]))
         self.canvas.draw()
 
     # Fonction qui donne la densité de probabilité
@@ -243,10 +246,12 @@ class InterfaceGraphique(tk.Tk):
 
             self.ax.plot(x, psy + valeurs[n])
             self.ax.fill_between(x, psy + valeurs[n], valeurs[n], alpha=0.2)
-            self.ax.axhline(valeurs[n], 0.01, 0.99, color="black", linewidth=0.7)
+            self.ax.axhline(valeurs[n], 0.01, 0.99, color="black",
+                            linewidth=0.7)
             maxi.append(np.max(psy[region2]))
             mini.append(np.min(psy[region1]))
-        self.ax.set_ylim(0.9*(np.min(mini)+valeurs[0]), 1.1*(np.max(maxi)+valeurs[len(valeurs)-1]))
+        self.ax.set_ylim(0.9*(np.min(mini)+valeurs[0]),
+                         1.1*(np.max(maxi)+valeurs[len(valeurs)-1]))
         self.canvas.draw()
 
     # fonction d'onde pour la proba en puit infini
@@ -267,7 +272,8 @@ class InterfaceGraphique(tk.Tk):
                 psy[absol] = ((1/(np.sqrt(int(L)))) * (np.cos(n * np.pi * x[absol] / (2 * int(L)))))**2
             self.ax.plot(x, psy + E)
             self.ax.fill_between(x, psy + E, E, alpha=0.2)
-        self.ax.set_ylim(0.2*(1 * np.pi) ** 2 / (8 * int(L) ** 2), (self.n_max * np.pi) ** 2 / (8 * int(L) ** 2)*1.1)
+        self.ax.set_ylim(0.2*(1 * np.pi) ** 2 / (8 * int(L) ** 2),
+                         (self.n_max * np.pi) ** 2 / (8 * int(L) ** 2)*1.1)
         self.canvas.draw()
 
     # fonction pour update les xlim et les fonction d'onde
