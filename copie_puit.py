@@ -52,6 +52,8 @@ class InterfaceGraphique(tk.Tk):
         self.control_frame.grid_columnconfigure(0, weight=1)
         self.panel_frame = tk.Frame(self, bg="pink", bd=2, relief="solid")
         self.panel_frame.grid(row=1, column=1, sticky='nsew')
+        self.panel_frame.grid_columnconfigure(0, weight=1)
+        self.panel_frame.grid_rowconfigure(0, weight=1)
         self.headcontrol_frame = tk.Frame(self, bg="green",
                                           bd=2, relief="solid")
         self.headcontrol_frame.grid(row=0, column=0, sticky='nsew')
@@ -128,7 +130,7 @@ class InterfaceGraphique(tk.Tk):
 
         # insertion dans subplot
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.panel_frame)
-        self.canvas.get_tk_widget().grid(row=0, column=0, sticky='nsew')
+        self.canvas.get_tk_widget().grid(row=0, column=0, sticky='nsew', padx=50, pady=50)
 
         # fonction pour afficher le graphe
         self.puit_fini()
