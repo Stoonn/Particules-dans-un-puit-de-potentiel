@@ -7,6 +7,13 @@ from matplotlib.figure import Figure
 
 class InterfaceGraphique(tk.Tk):
 
+    def style_ax(self):
+        self.ax.tick_params(colors='#00ff6e')
+        self.ax.xaxis.label.set_color('#00ff6e')
+        self.ax.yaxis.label.set_color('#00ff6e')
+        for sp in self.ax.spines.values():
+            sp.set_color('#00ff6e')
+
     def quit_fullscreen(self, event):
         self.attributes("-fullscreen", False)
 
@@ -18,6 +25,8 @@ class InterfaceGraphique(tk.Tk):
         self.m = 1
         self.hbar = 1
         self.V_0 = 1
+        self.WF = ["#00ff6e", "#00ffe0", "#ffb830", "#ff6b6b",
+                   "#c77dff", "#4da6ff", "#ff9f1c", "#80ffdb"]
         # theme graphique
         style_scale = ttk.Style()
         style_scale.theme_use('clam')
@@ -93,10 +102,14 @@ class InterfaceGraphique(tk.Tk):
         self.ax = self.fig.add_subplot(111)
 
         # insertion dans subplot
+        self.fig = Figure(facecolor='#080b0f')
+        self.ax = self.fig.add_subplot(111)
+        self.ax.set_facecolor('#0f2d15')
+
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.panel_frame)
         self.canvas.get_tk_widget().grid(row=0, column=0,
-                                         sticky='nsew', padx=50, pady=50)
-
+                                        sticky='nsew', padx=50, pady=50)
+        self.canvas.get_tk_widget().configure(bg="#080b0f", highlightthickness=0)
         # Label qui affiche la valeur largeur
         self.largeur_label = tk.Label(self.Frame_largeur,
                                       text=f'largeur a : 1',
@@ -206,6 +219,7 @@ class InterfaceGraphique(tk.Tk):
     def puit_infini(self):
 
         self.ax.clear()
+        self.style_ax()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
         self.ax.axvline(int(L), color='grey', linestyle='--')
@@ -291,14 +305,16 @@ class InterfaceGraphique(tk.Tk):
         maxi = []
         mini = []
         self.ax.clear()
+        self.style_ax()
         coefficients = self.coeff()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
-        self.ax.axvline(int(L), color='grey', linestyle='--')
-        self.ax.axvline(-int(L), color='grey', linestyle='--')
         self.ax.set_facecolor('#0f2d15')
-        self.ax.axvspan(-int(L), int(L), facecolor='#0a1f0e', alpha=0.3)
-        self.ax.grid(True, color='black', linewidth=0.5, alpha=0.3)
+        self.ax.axvline(int(L), color='#00ff6e', linestyle='--')
+        self.ax.axvline(-int(L), color='#00ff6e', linestyle='--')
+        self.ax.axvspan(-int(L)*2, -int(L), facecolor='#00ff6e', alpha=0.2)
+        self.ax.axvspan(int(L), int(L)*2, facecolor='#00ff6e', alpha=0.2)
+        self.ax.grid(True, color='#00ff6e', linewidth=0.5, alpha=0.2)
         region1 = x < -int(L)
         region2 = np.abs(x) <= int(L)
         region3 = x > int(L)
@@ -339,6 +355,7 @@ class InterfaceGraphique(tk.Tk):
         mini = []
         coefficients = self.coeff()
         self.ax.clear()
+        self.style_ax()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
         self.ax.axvline(int(L), color='grey', linestyle='--')
@@ -383,6 +400,7 @@ class InterfaceGraphique(tk.Tk):
     def proba_infini(self):
 
         self.ax.clear()
+        self.style_ax()
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
         self.ax.axvline(int(L), color='grey', linestyle='--')
