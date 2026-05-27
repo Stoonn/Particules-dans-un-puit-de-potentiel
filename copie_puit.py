@@ -14,6 +14,7 @@ class InterfaceGraphique(tk.Tk):
         tk.Tk.__init__(self)
 
         # variables de départs
+        self.FONT_MONO = "Courier New"
         self.m = 1
         self.hbar = 1
         self.V_0 = 1
@@ -21,17 +22,17 @@ class InterfaceGraphique(tk.Tk):
         style_scale = ttk.Style()
         style_scale.theme_use('clam')
         style_scale.configure("Phos.Horizontal.TScale",
-                        background='#050709',
-                        troughcolor='#2B0136',
+                        background='#080b0f',
+                        troughcolor='#0f2d15',
                         sliderthickness=16,
                         sliderrelief="flat",
                         borderwidth=0)
         style_checkbutton = ttk.Style()
         style_checkbutton.theme_use('clam')
         style_checkbutton.configure("Phos.TCheckbutton",
-                        background='#050709',
-                        foreground='white',
-                        font=('Arial', 10))
+                        background='#0c1018',
+                        foreground='#c8ffd4',
+                        font=(self.FONT_MONO, 11, "bold"))
 
         # nombre max de niveau d'énergie voulu
         self.n_max = n_max
@@ -46,35 +47,45 @@ class InterfaceGraphique(tk.Tk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=7)
 
-        self.control_frame = tk.Frame(self, bg="red", bd=2, relief="solid")
+        self.control_frame = tk.Frame(self, bg="#080b0f",
+                                      relief="sunken", bd=1)
         self.control_frame.grid(row=1, column=0, sticky='nsew')
         self.control_frame.grid_columnconfigure(0, weight=1)
-        self.panel_frame = tk.Frame(self, bg="pink", bd=2, relief="solid")
+        self.panel_frame = tk.Frame(self, bg="#080b0f",
+                                    relief="sunken", bd=1)
         self.panel_frame.grid(row=1, column=1, sticky='nsew')
         self.panel_frame.grid_columnconfigure(0, weight=1)
         self.panel_frame.grid_rowconfigure(0, weight=1)
-        self.headcontrol_frame = tk.Frame(self, bg="green",
-                                          bd=2, relief="solid")
+        self.headcontrol_frame = tk.Frame(self, bg="#080b0f",
+                                          relief="sunken", bd=1)
         self.headcontrol_frame.grid(row=0, column=0, sticky='nsew')
-        self.headpanel_frame = tk.Frame(self, bg="grey", bd=2, relief="solid")
+        self.headpanel_frame = tk.Frame(self, bg="#080b0f",
+                                        relief="sunken", bd=1)
         self.headpanel_frame.grid(row=0, column=1, sticky='nsew')
-        self.Frame_largeur = tk.Frame(self.control_frame, bg='black', bd=2, relief="solid", pady=15)
+        self.Frame_largeur = tk.Frame(self.control_frame, bg='#080b0f',
+                                      relief="sunken", bd=1, pady=15)
         self.Frame_largeur.grid(row=0, column=0, sticky='ew')
         self.Frame_largeur.grid_columnconfigure(0, weight=1)
-        self.Frame_hauteur = tk.Frame(self.control_frame, bg='blue', bd=2, relief="solid", pady=15)
+        self.Frame_hauteur = tk.Frame(self.control_frame, bg='#080b0f',
+                                      relief="sunken", bd=1, pady=15)
         self.Frame_hauteur.grid(row=1, column=0, sticky='ew')
         self.Frame_hauteur.grid_columnconfigure(0, weight=1)
-        self.Frame_affichage = tk.Frame(self.control_frame, bg='purple', bd=2, relief="solid", pady=15)
+        self.Frame_affichage = tk.Frame(self.control_frame, bg='#080b0f',
+                                        relief="sunken", bd=1, pady=15)
         self.Frame_affichage.grid(row=2, column=0, sticky='ew')
         self.Frame_affichage.grid_columnconfigure(0, weight=1)
 
         # les labels des différentes frames
         label_headcontrol = tk.Label(self.headcontrol_frame,
-                                     text='Panneau de controle')
+                                     text='PANNEAU DE CONTROLE',
+                                     font=(self.FONT_MONO, 11, "bold"),
+                                     fg='#4d8f5c', bg='#080b0f')
         label_headcontrol.grid(row=0, column=0)
 
         label_headpanel = tk.Label(self.headpanel_frame,
-                                   text='affichage graphique')
+                                   text='AFFICHAGE GRAPHIQUE',
+                                   font=(self.FONT_MONO, 11, "bold"),
+                                   fg='#4d8f5c', bg='#080b0f')
         label_headpanel.grid(row=0, column=0)
 
         # figure matplotlib
@@ -83,25 +94,38 @@ class InterfaceGraphique(tk.Tk):
 
         # insertion dans subplot
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.panel_frame)
-        self.canvas.get_tk_widget().grid(row=0, column=0, sticky='nsew')
+        self.canvas.get_tk_widget().grid(row=0, column=0,
+                                         sticky='nsew', padx=50, pady=50)
 
         # Label qui affiche la valeur largeur
-        self.largeur_label = tk.Label(self.Frame_largeur, text='1')
-        self.largeur_label.grid(row=1, column=0, sticky='')
+        self.largeur_label = tk.Label(self.Frame_largeur,
+                                      text=f'largeur a : 1',
+                                      font=(self.FONT_MONO, 11, "bold"),
+                                      fg='#4d8f5c', bg='#080b0f')
+        self.largeur_label.grid(row=2, column=0, sticky='', pady=20)
 
-        largeur = tk.Label(self.Frame_largeur, text='largeur a :')
-        largeur.grid(row=0, column=0, sticky='')
+        largeur_label2 = tk.Label(self.Frame_largeur,
+                                  text='\u25B6 PARAMETRE a',
+                                  font=(self.FONT_MONO, 11, "bold"),
+                                  fg='#4d8f5c', bg='#080b0f')
+        largeur_label2.grid(row=0, column=0, sticky='nw')
 
         # variables qui controle les checkbutton
         self.var1 = tk.BooleanVar()
         self.var2 = tk.BooleanVar()
 
         # label qui affiche la hauteur du puit
-        self.hauteur_label = tk.Label(self.Frame_hauteur, text='1')
-        self.hauteur_label.grid(row=1, column=0, sticky='')
+        self.hauteur_label = tk.Label(self.Frame_hauteur,
+                                      text=f'Potentiel V : 1',
+                                      font=(self.FONT_MONO, 11, "bold"),
+                                      fg='#4d8f5c', bg='#080b0f')
+        self.hauteur_label.grid(row=1, column=0, sticky='', pady=20)
 
-        self.hauteur_text = tk.Label(self.Frame_hauteur, text='potentiel v :')
-        self.hauteur_text.grid(row=0, column=0, sticky='')
+        largeur_label2 = tk.Label(self.Frame_hauteur,
+                                  text='\u25B6 PARAMETRE V (hauteur du puit)',
+                                  font=(self.FONT_MONO, 11, "bold"),
+                                  fg='#4d8f5c', bg='#080b0f')
+        largeur_label2.grid(row=0, column=0, sticky='nw')
 
         # Bouton potentiel v
         self.Hauteur_puit = ttk.Scale(self.Frame_hauteur, from_=1, to=25,
@@ -114,25 +138,30 @@ class InterfaceGraphique(tk.Tk):
                                        to=25, command=self.refresh,
                                        orient='horizontal', style="Phos.Horizontal.TScale")
         self.Largeur_puit.set(1)
-        self.Largeur_puit.grid(row=2, column=0, sticky='')
+        self.Largeur_puit.grid(row=3, column=0, sticky='')
 
         # Bouton a check permettant d'activer et désactiver le potentiel infini
+        self.affichage_label = tk.Label(self.Frame_affichage,
+                                        text='\u25B6 MODE D\'AFFICHAGE',
+                                        font=(self.FONT_MONO, 11, "bold"),
+                                        fg='#4d8f5c', bg='#080b0f')
+        self.affichage_label.grid(row=0, column=0, sticky='nw')
         self.var1 = tk.BooleanVar()
         self.infinibout = ttk.Checkbutton(self.Frame_affichage,
-                                         text='potentiel infini',
+                                         text='POTENTIEL INFINI',
                                          variable=self.var1,
                                          style="Phos.TCheckbutton",
                                          command=lambda: self.infini())
-        self.infinibout.grid(row=0, column=0, sticky='')
+        self.infinibout.grid(row=1, column=0, sticky='', pady=20)
 
         # Bouton permettant d'activer et désactiver la densité de proba
         self.var2 = tk.BooleanVar()
         self.probabout = ttk.Checkbutton(self.Frame_affichage,
-                                        text='densité de proba',
+                                        text='DENSITE DE PROBABLITE',
                                         variable=self.var2,
                                         style="Phos.TCheckbutton",
                                         command=lambda: self.refresh())
-        self.probabout.grid(row=1, column=0, sticky='')
+        self.probabout.grid(row=2, column=0, sticky='')
 
         # fonction pour afficher le graphe
         self.puit_fini()
@@ -144,12 +173,18 @@ class InterfaceGraphique(tk.Tk):
         if self.var1.get():
             if self.var2.get():
                 self.Hauteur_puit.destroy()
-                self.hauteur_label = tk.Label(self.Frame_hauteur, text='\u221e')
+                self.hauteur_label = tk.Label(self.Frame_hauteur,
+                                              text='Potentiel  V : \u221e',
+                                              font=(self.FONT_MONO, 11, "bold"),
+                                              fg='#4d8f5c', bg='#080b0f')
                 self.hauteur_label.grid(row=1, column=0, sticky='')
                 self.proba_infini()
             else:
                 self.Hauteur_puit.destroy()
-                self.hauteur_label = tk.Label(self.Frame_hauteur, text='\u221e')
+                self.hauteur_label = tk.Label(self.Frame_hauteur,
+                                              text='Potentiel V : \u221e',
+                                              font=(self.FONT_MONO, 11, "bold"),
+                                              fg='#4d8f5c', bg='#080b0f')
                 self.hauteur_label.grid(row=1, column=0, sticky='')
                 self.puit_infini()
         else:
@@ -157,10 +192,10 @@ class InterfaceGraphique(tk.Tk):
                                        to=25, command=self.refresh,
                                        orient='horizontal', style="Phos.Horizontal.TScale")
             self.Hauteur_puit.grid(row=2, column=0, sticky='')
-            self.hauteur_text = tk.Label(self.Frame_hauteur,
-                                         text='potentiel v :')
-            self.hauteur_text.grid(row=0, column=0, sticky='')
-            self.hauteur_label = tk.Label(self.Frame_hauteur, text='1')
+            self.hauteur_label = tk.Label(self.Frame_hauteur,
+                                          text=f'Potentiel V : {int(self.Hauteur_puit.get())}',
+                                          font=(self.FONT_MONO, 11, "bold"),
+                                          fg='#4d8f5c', bg='#080b0f')
             self.hauteur_label.grid(row=1, column=0, sticky='')
             if self.var2.get():
                 self.proba()
@@ -175,6 +210,9 @@ class InterfaceGraphique(tk.Tk):
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
         self.ax.axvline(int(L), color='grey', linestyle='--')
         self.ax.axvline(-int(L), color='grey', linestyle='--')
+        self.ax.set_facecolor('#0f2d15')
+        self.ax.axvspan(-int(L), int(L), facecolor='#0a1f0e', alpha=0.3)
+        self.ax.grid(True, color='black', linewidth=0.5, alpha=0.3)
         psy = np.zeros_like(x)
         absol = np.abs(x) <= int(L)
         for n in range(1, self.n_max+1):
@@ -258,6 +296,9 @@ class InterfaceGraphique(tk.Tk):
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
         self.ax.axvline(int(L), color='grey', linestyle='--')
         self.ax.axvline(-int(L), color='grey', linestyle='--')
+        self.ax.set_facecolor('#0f2d15')
+        self.ax.axvspan(-int(L), int(L), facecolor='#0a1f0e', alpha=0.3)
+        self.ax.grid(True, color='black', linewidth=0.5, alpha=0.3)
         region1 = x < -int(L)
         region2 = np.abs(x) <= int(L)
         region3 = x > int(L)
@@ -302,6 +343,9 @@ class InterfaceGraphique(tk.Tk):
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
         self.ax.axvline(int(L), color='grey', linestyle='--')
         self.ax.axvline(-int(L), color='grey', linestyle='--')
+        self.ax.set_facecolor('#0f2d15')
+        self.ax.grid(True, color='black', linewidth=0.5, alpha=0.3)
+        self.ax.axvspan(-int(L), int(L), facecolor='#0a1f0e', alpha=0.3)
         region1 = x < -int(L)
         region2 = np.abs(x) <= int(L)
         region3 = x > int(L)
@@ -343,6 +387,9 @@ class InterfaceGraphique(tk.Tk):
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
         self.ax.axvline(int(L), color='grey', linestyle='--')
         self.ax.axvline(-int(L), color='grey', linestyle='--')
+        self.ax.set_facecolor('#0f2d15')
+        self.ax.axvspan(-int(L), int(L), facecolor='#0a1f0e', alpha=0.3)
+        self.ax.grid(True, color='black', linewidth=0.5, alpha=0.3)
         psy = np.zeros_like(x)
         absol = np.abs(x) <= int(L)
         for n in range(1, self.n_max+1):
@@ -360,14 +407,19 @@ class InterfaceGraphique(tk.Tk):
     # fonction pour update les xlim et les fonction d'onde
     # quand on touche aux boutons
     def refresh(self, *args):
-        self.largeur_label.config(text=f'{int(self.Largeur_puit.get())}')   # actualises les labels pour les scales
+        self.largeur_label.config(text=f'Largeur a :  {int(self.Largeur_puit.get())}',
+                                  font=(self.FONT_MONO, 11, "bold"),
+                                  fg='#4d8f5c', bg='#080b0f')   # actualises les labels pour les scales
         if self.var1.get():
             if self.var2.get():
                 self.proba_infini()
             else:
                 self.puit_infini()
         else:
-            self.hauteur_label.config(text=f'{int(self.Hauteur_puit.get())}')
+            self.hauteur_label.config(text=f'Potentiel V : {int(self.Hauteur_puit.get())}',
+                                      font=(self.FONT_MONO, 11, "bold"),
+                                      fg='#4d8f5c', bg='#080b0f')
+
             if self.var2.get():
                 self.proba()
             else:
