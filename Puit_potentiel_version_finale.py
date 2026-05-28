@@ -191,10 +191,6 @@ class InterfaceGraphique(tk.Tk):
                         fg='#7ecf93', bg='#080b0f', pady=10)
         label_select.grid(row=1, column=0, sticky='')
 
-        self.selecteur = ttk.Spinbox(self.Frame_info, from_=1, to=self.n_max,
-                                    width=10, command=self.on_select, style="Phos.TSpinbox")
-        self.selecteur.grid(row=1, column=1, sticky='')
-        self.selecteur.set(1)
 
         # figure matplotlib
         self.fig = Figure()
@@ -263,6 +259,7 @@ class InterfaceGraphique(tk.Tk):
                                   fg='#7ecf93', bg='#080b0f')
         largeur_label2.grid(row=0, column=0, sticky='nw')
 
+
         # Bouton potentiel v
         self.Hauteur_puit = ttk.Scale(self.Frame_hauteur, from_=1, to=25,
                                       command=self.refresh, orient='horizontal',
@@ -275,9 +272,13 @@ class InterfaceGraphique(tk.Tk):
                                        orient='horizontal', style="Phos.Horizontal.TScale")
         self.Largeur_puit.grid(row=3, column=0, sticky='')
 
+        self.selecteur = ttk.Spinbox(self.Frame_info, from_=1, to=self.emax(),
+                                    width=10, command=self.on_select, style="Phos.TSpinbox")
+        self.selecteur.grid(row=1, column=1, sticky='')
+
         self.Largeur_puit.set(1)
         self.Hauteur_puit.set(1)
-
+        self.selecteur.set(1)
 
         # Bouton a check permettant d'activer et désactiver le potentiel infini
         self.affichage_label = tk.Label(self.Frame_affichage,
@@ -301,8 +302,12 @@ class InterfaceGraphique(tk.Tk):
 
     def on_select(self):
         self.n_selectionne = int(self.selecteur.get()) - 1  
-        valeurs, _ = self.e_n()
-        self.update_mesures(valeurs)
+        if self.mode_puits == "fini":
+            valeurs = self.e_n()[0]
+            self.update_mesures(valeurs)
+        elif self.mode_puits == "infini":
+            valeurs = self.puit_infini()
+            self.update_mesures(valeurs)
 
     def update_mesures(self, valeurs):
         if valeurs and self.n_selectionne < len(valeurs):
@@ -321,6 +326,7 @@ class InterfaceGraphique(tk.Tk):
 
         self.ax.clear()
         self.style_ax()
+        energies = []
         L = self.Largeur_puit.get()
         x = np.linspace(-int(L) * 2, int(L) * 2, 2000)
         self.ax.set_facecolor('#0f2d15')
@@ -333,6 +339,7 @@ class InterfaceGraphique(tk.Tk):
         absol = np.abs(x) <= int(L)
         for n in range(1, self.n_max+1):
             E = (n * np.pi) ** 2 / (8 * int(L) ** 2)
+            energies.append(E)
             if n % 2 == 0:
                 psy[absol] = (1/(np.sqrt(int(L)))) * (np.sin(n * np.pi * x[absol] / (2 * int(L))))
             else:
@@ -346,6 +353,7 @@ class InterfaceGraphique(tk.Tk):
                        labelcolor='#c8ffd4',
                        fontsize=8)
         self.canvas.draw()
+        return energies
 
     # fonctions pour le puit fini
     def k(self, e):
@@ -553,6 +561,7 @@ class InterfaceGraphique(tk.Tk):
         self.mode_puits = 'fini'
         self.bout_fini.config(fg='#00ff6e', relief='sunken')
         self.bout_infini.config(fg='#c8ffd4', relief='raised')
+        self.selecteur.config(to= self.emax())
         if self.mode_affichage == 'proba':
             self.bout_proba.config(fg='#00ff6e', relief='sunken')
             self.bout_onde.config(fg='#c8ffd4', relief='raised')
@@ -566,6 +575,7 @@ class InterfaceGraphique(tk.Tk):
         self.mode_puits = 'infini'
         self.bout_infini.config(fg='#00ff6e', relief='sunken')
         self.bout_fini.config(fg='#c8ffd4', relief='raised')
+        self.selecteur.config(to= self.emax())
         if self.mode_affichage == 'proba':
             self.bout_proba.config(fg='#00ff6e', relief='sunken')
             self.bout_onde.config(fg='#c8ffd4', relief='raised')
@@ -608,18 +618,31 @@ class InterfaceGraphique(tk.Tk):
         if self.mode_puits == 'infini':
             if self.mode_affichage == 'proba':
                 self.proba_infini()
+                self.selecteur.config(to= self.emax())
             else:
                 self.puit_infini()
+                self.selecteur.config(to= self.emax())
         else:
             self.hauteur_label.config(text=f'POTENTIEL V : {int(self.Hauteur_puit.get())}',
                                       font=(self.FONT_MONO, 11, "bold"),
                                       fg='#7ecf93', bg='#080b0f')
+            self.selecteur.config(to= self.emax())
 
             if self.mode_affichage == 'proba':
                 self.proba()
+                self.selecteur.config(to= self.emax())
             else:
                 self.puit_fini()
+                self.selecteur.config(to= self.emax())
+                
 
+    def emax(self):
+
+        if self.mode_puits == 'infini':
+            return self.n_max
+        elif self.mode_puits == 'fini':
+            return len(self.e_n()[0])
+        
 
 Interface = InterfaceGraphique(6)
 Interface.mainloop()
