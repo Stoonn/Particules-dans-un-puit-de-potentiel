@@ -197,8 +197,11 @@ class InterfaceGraphique(tk.Tk):
         self.Largeur_puit = ttk.Scale(self.Frame_largeur, from_=1,
                                        to=25, command=self.refresh,
                                        orient='horizontal', style="Phos.Horizontal.TScale")
-        self.Largeur_puit.set(1)
         self.Largeur_puit.grid(row=3, column=0, sticky='')
+
+        self.Largeur_puit.set(1)
+        self.Hauteur_puit.set(1)
+
 
         # Bouton a check permettant d'activer et désactiver le potentiel infini
         self.affichage_label = tk.Label(self.Frame_affichage,
