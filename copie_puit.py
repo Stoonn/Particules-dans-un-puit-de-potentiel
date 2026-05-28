@@ -181,18 +181,20 @@ class InterfaceGraphique(tk.Tk):
                                   fg='#7ecf93', bg='#080b0f')
         largeur_label2.grid(row=0, column=0, sticky='nw')
 
+        # ici ce sera la largeur a du puit
+        self.Largeur_puit = ttk.Scale(self.Frame_largeur, from_=1,
+                                to=25, command=self.refresh,
+                                orient='horizontal', style="Phos.Horizontal.TScale")
+        self.Largeur_puit.grid(row=3, column=0, sticky='')
+
         # Bouton potentiel v
         self.Hauteur_puit = ttk.Scale(self.Frame_hauteur, from_=1, to=25,
                                       command=self.refresh, orient='horizontal',
                                       style="Phos.Horizontal.TScale")
         self.Hauteur_puit.grid(row=2, column=0, sticky='')
 
-        # ici ce sera la largeur a du puit
-        self.Largeur_puit = ttk.Scale(self.Frame_largeur, from_=1,
-                                       to=25, command=self.refresh,
-                                       orient='horizontal', style="Phos.Horizontal.TScale")
         self.Largeur_puit.set(1)
-        self.Largeur_puit.grid(row=3, column=0, sticky='')
+        self.Hauteur_puit.set(1)
 
         # Bouton a check permettant d'activer et désactiver le potentiel infini
         self.affichage_label = tk.Label(self.Frame_affichage,
@@ -239,7 +241,7 @@ class InterfaceGraphique(tk.Tk):
 
     # dichotimie pour trouver les En
     def e_n(self):
-        self.V_0 = max(1, int(self.Hauteur_puit.get()))  # minimum 1
+        self.V_0 = max(1,int(self.Hauteur_puit.get()))  # minimum 1
         self.itv = np.linspace(1e-6, self.V_0-1e-6, 10000)
         L = self.Largeur_puit.get()
         valeurs = []
@@ -446,6 +448,7 @@ class InterfaceGraphique(tk.Tk):
         self.largeur_label.config(text=f'LARGEUR a : {int(self.Largeur_puit.get())}',
                                   font=(self.FONT_MONO, 11, "bold"),
                                   fg='#7ecf93', bg='#080b0f')   # actualises les labels pour les scales
+        
         if self.mode_puits == 'infini':
             if self.mode_affichage == 'proba':
                 self.proba_infini()
