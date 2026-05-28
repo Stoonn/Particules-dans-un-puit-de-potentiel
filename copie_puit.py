@@ -21,8 +21,8 @@ class InterfaceGraphique(tk.Tk):
         tk.Tk.__init__(self)
 
         # variables de départs
-        self.mode_puits = 'fini'   
-        self.mode_affichage = 'onde'  
+        self.mode_puits = 'fini'
+        self.mode_affichage = 'onde'
         self.FONT_MONO = "Courier New"
         self.m = 1
         self.hbar = 1
@@ -33,11 +33,11 @@ class InterfaceGraphique(tk.Tk):
         style_scale = ttk.Style()
         style_scale.theme_use('clam')
         style_scale.configure("Phos.Horizontal.TScale",
-                        background='#080b0f',
-                        troughcolor='#1e4028',
-                        sliderthickness=16,
-                        sliderrelief="flat",
-                        borderwidth=0)
+                              background='#080b0f',
+                              troughcolor='#1e4028',
+                              sliderthickness=16,
+                              sliderrelief="flat",
+                              borderwidth=0)
 
         # nombre max de niveau d'énergie voulu
         self.n_max = n_max
@@ -83,22 +83,21 @@ class InterfaceGraphique(tk.Tk):
         self.Frame_affichage.grid(row=2, column=0, sticky='ew')
         self.Frame_affichage.grid_columnconfigure(0, weight=1)
         self.Frame_bouton = tk.Frame(self.Frame_affichage, bg='#080b0f',
-                                        relief="flat", pady=15)
+                                     relief="flat", pady=15)
         self.Frame_bouton.grid(row=1, column=0, sticky='ew')
         self.Frame_bouton.grid_columnconfigure(0, weight=1)
         self.Frame_bouton.grid_columnconfigure(1, weight=1)
 
-
         # les labels des différentes frames
         label_headcontrol1 = tk.Label(self.headcontrol_frame,
-                                     text='PANNEAU DE CONTROLE',
-                                     font=(self.FONT_MONO, 11, "bold"),
-                                     fg='#7ecf93', bg='#080b0f', pady=20)
+                                      text='PANNEAU DE CONTROLE',
+                                      font=(self.FONT_MONO, 11, "bold"),
+                                      fg='#7ecf93', bg='#080b0f', pady=20)
         label_headcontrol1.grid(row=1, column=0, sticky='')
         label_headcontrol2 = tk.Label(self.headcontrol_frame,
-                                     text='PROJET NUMERIQUE DMP400',
-                                     font=(self.FONT_MONO, 11, "bold"),
-                                     fg='#7ecf93', bg='#080b0f')
+                                      text='PROJET NUMERIQUE DMP400',
+                                      font=(self.FONT_MONO, 11, "bold"),
+                                      fg='#7ecf93', bg='#080b0f')
         label_headcontrol2.grid(row=0, column=0, sticky='nw')
 
         label_headpanel = tk.Label(self.headpanel_frame,
@@ -107,12 +106,10 @@ class InterfaceGraphique(tk.Tk):
                                    fg='#7ecf93', bg='#080b0f')
         label_headpanel.grid(row=0, column=0)
         label_headpanel2 = tk.Label(self.headpanel_frame,
-                                   text='MODELISATION DU PUIT DE POTENTIEL QUANTIQUE',
-                                   font=(self.FONT_MONO, 11, "bold"),
-                                   fg='#7ecf93', bg='#080b0f')
-        label_headpanel2.grid(row=1, column=0, sticky ='')
-
-
+                                    text='MODELISATION DU PUIT DE POTENTIEL QUANTIQUE',
+                                    font=(self.FONT_MONO, 11, "bold"),
+                                    fg='#7ecf93', bg='#080b0f')
+        label_headpanel2.grid(row=1, column=0, sticky='')
 
         # figure matplotlib
         self.fig = Figure()
@@ -125,11 +122,11 @@ class InterfaceGraphique(tk.Tk):
 
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.panel_frame)
         self.canvas.get_tk_widget().grid(row=0, column=0,
-                                        sticky='nsew', padx=50, pady=50)
+                                         sticky='nsew', padx=50, pady=50)
         self.canvas.get_tk_widget().configure(bg="#080b0f", highlightthickness=0)
         # Label qui affiche la valeur largeur
         self.largeur_label = tk.Label(self.Frame_largeur,
-                                      text=f'LARGEUR a : 1',
+                                      text='LARGEUR a : 1',
                                       font=(self.FONT_MONO, 11, "bold"),
                                       fg='#7ecf93', bg='#080b0f')
         self.largeur_label.grid(row=2, column=0, sticky='', pady=20)
@@ -142,35 +139,35 @@ class InterfaceGraphique(tk.Tk):
 
         # variables qui controle les checkbutton
         self.bout_fini = tk.Button(self.Frame_bouton, text='FINI',
-                            command=self.mode_fini,
-                            bg='#0c1018', fg='#c8ffd4',
-                            font=(self.FONT_MONO, 11, 'bold'),
-                            relief='raised', width=15)
+                                   command=self.mode_fini,
+                                   bg='#0c1018', fg='#c8ffd4',
+                                   font=(self.FONT_MONO, 11, 'bold'),
+                                   relief='raised', width=15)
         self.bout_fini.grid(row=0, column=0, sticky='', pady=25)
 
         self.bout_infini = tk.Button(self.Frame_bouton, text='INFINI',
-                              command=self.mode_infini,
-                              bg='#0c1018', fg='#c8ffd4',
-                              font=(self.FONT_MONO, 11, 'bold'),
-                              relief='raised', width=15)
+                                     command=self.mode_infini,
+                                     bg='#0c1018', fg='#c8ffd4',
+                                     font=(self.FONT_MONO, 11, 'bold'),
+                                     relief='raised', width=15)
         self.bout_infini.grid(row=0, column=1, sticky='', pady=25)
         self.bout_onde = tk.Button(self.Frame_bouton, text='ONDE',
-                            command=self.mode_onde,
-                            bg='#0c1018', fg='#c8ffd4',
-                            font=(self.FONT_MONO, 11, 'bold'),
-                            relief='raised', width=15)
+                                   command=self.mode_onde,
+                                   bg='#0c1018', fg='#c8ffd4',
+                                   font=(self.FONT_MONO, 11, 'bold'),
+                                   relief='raised', width=15)
         self.bout_onde.grid(row=1, column=0, sticky='', pady=25)
 
         self.bout_proba = tk.Button(self.Frame_bouton, text='PROBA',
-                             command=self.mode_proba,
-                             bg='#0c1018', fg='#c8ffd4',
-                             font=(self.FONT_MONO, 11, 'bold'),
-                             relief='raised', width=15)
+                                    command=self.mode_proba,
+                                    bg='#0c1018', fg='#c8ffd4',
+                                    font=(self.FONT_MONO, 11, 'bold'),
+                                    relief='raised', width=15)
         self.bout_proba.grid(row=1, column=1, sticky='', pady=25)
 
         # label qui affiche la hauteur du puit
         self.hauteur_label = tk.Label(self.Frame_hauteur,
-                                      text=f'POTENTIEL V : 1',
+                                      text='POTENTIEL V : 1',
                                       font=(self.FONT_MONO, 11, "bold"),
                                       fg='#7ecf93', bg='#080b0f')
         self.hauteur_label.grid(row=1, column=0, sticky='', pady=20)
@@ -183,8 +180,8 @@ class InterfaceGraphique(tk.Tk):
 
         # ici ce sera la largeur a du puit
         self.Largeur_puit = ttk.Scale(self.Frame_largeur, from_=1,
-                                to=25, command=self.refresh,
-                                orient='horizontal', style="Phos.Horizontal.TScale")
+                                      to=25, command=self.refresh,
+                                      orient='horizontal', style="Phos.Horizontal.TScale")
         self.Largeur_puit.grid(row=3, column=0, sticky='')
 
         # Bouton potentiel v
@@ -205,7 +202,7 @@ class InterfaceGraphique(tk.Tk):
 
         # fonction pour afficher le graphe
         self.puit_fini()
-    
+
     # fonction d'onde pour le puit infini
     def puit_infini(self):
 
@@ -241,7 +238,7 @@ class InterfaceGraphique(tk.Tk):
 
     # dichotimie pour trouver les En
     def e_n(self):
-        self.V_0 = max(1,int(self.Hauteur_puit.get()))  # minimum 1
+        self.V_0 = max(1, int(self.Hauteur_puit.get()))  # minimum 1
         self.itv = np.linspace(1e-6, self.V_0-1e-6, 10000)
         L = self.Largeur_puit.get()
         valeurs = []
@@ -444,11 +441,12 @@ class InterfaceGraphique(tk.Tk):
         else:
             self.proba()
     # quand on touche aux boutons
+
     def refresh(self, *args):
         self.largeur_label.config(text=f'LARGEUR a : {int(self.Largeur_puit.get())}',
                                   font=(self.FONT_MONO, 11, "bold"),
                                   fg='#7ecf93', bg='#080b0f')   # actualises les labels pour les scales
-        
+
         if self.mode_puits == 'infini':
             if self.mode_affichage == 'proba':
                 self.proba_infini()

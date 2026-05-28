@@ -36,10 +36,10 @@ class InterfaceGraphique(tk.Tk):
                                          command=self.infini)
         self.infinibout.grid(row=1, column=0, sticky='nw')
 
-        #bouton permettant de mettre en mouvement dans le temps
+        # bouton permettant de mettre en mouvement dans le temps
         self.var3 = tk.BooleanVar()
         self.temporel = tk.Checkbutton(self, text='potentiel infini',
-                                         variable=self.var3)
+                                       variable=self.var3)
 
         # Bouton permettant d'activer et désactiver la densité de proba
         self.var2 = tk.BooleanVar()
@@ -67,7 +67,8 @@ class InterfaceGraphique(tk.Tk):
         # fonction pour afficher le graphe
         self.puit_fini()
 
-    # fonction permettant de passer d'un puit fini à infini et faire disparaitre la spinbox de potenitel
+    # fonction permettant de passer d'un puit fini à
+    # infini et faire disparaitre la spinbox de potenitel
     def infini(self):
 
         if self.var1.get():
