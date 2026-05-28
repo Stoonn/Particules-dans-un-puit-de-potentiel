@@ -513,6 +513,7 @@ class InterfaceGraphique(tk.Tk):
                        edgecolor='#00ff6e',
                        labelcolor='#c8ffd4',
                        fontsize=8)
+        self.update_mesures(valeurs)
         self.canvas.draw()
 
     # fonction d'onde pour la proba en puit infini
@@ -545,7 +546,6 @@ class InterfaceGraphique(tk.Tk):
                        edgecolor='#00ff6e',
                        labelcolor='#c8ffd4',
                        fontsize=8)
-        self.update_mesures(valeurs)
         self.canvas.draw()
 
     # fonction pour update les xlim et les fonction d'onde
