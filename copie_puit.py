@@ -123,7 +123,8 @@ class InterfaceGraphique(tk.Tk):
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.panel_frame)
         self.canvas.get_tk_widget().grid(row=0, column=0,
                                          sticky='nsew', padx=50, pady=50)
-        self.canvas.get_tk_widget().configure(bg="#080b0f", highlightthickness=0)
+        self.canvas.get_tk_widget().configure(bg="#080b0f",
+                                              highlightthickness=0)
         # Label qui affiche la valeur largeur
         self.largeur_label = tk.Label(self.Frame_largeur,
                                       text='LARGEUR a : 1',
@@ -199,6 +200,10 @@ class InterfaceGraphique(tk.Tk):
                                         font=(self.FONT_MONO, 11, "bold"),
                                         fg='#7ecf93', bg='#080b0f')
         self.affichage_label.grid(row=0, column=0, sticky='nw')
+
+        # changer l'icone de l'app
+        icone = tk.PhotoImage(file='icone_puit_potentiel.png')
+        self.iconphoto(True, icone)
 
         # fonction pour afficher le graphe
         self.puit_fini()
