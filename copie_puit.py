@@ -27,6 +27,7 @@ class InterfaceGraphique(tk.Tk):
         self.m = 1
         self.hbar = 1
         self.V_0 = 1
+        self.n_selectionne = 0
         self.WF = ["#00ff6e", "#00ffe0", "#ffb830", "#ff6b6b",
                    "#c77dff", "#4da6ff", "#ff9f1c", "#80ffdb"]
         # theme graphique
@@ -38,6 +39,16 @@ class InterfaceGraphique(tk.Tk):
                         sliderthickness=16,
                         sliderrelief="flat",
                         borderwidth=0)
+        
+        style_spinbox = ttk.Style()
+        style_spinbox.configure("Phos.TSpinbox",
+                         fieldbackground='#0c1018',   # fond de la zone de saisie
+                         background='#0c1018',        # fond des boutons flèches
+                         foreground='#00ff6e',        # couleur du texte
+                         arrowcolor='#00ff6e',        # couleur des flèches
+                         bordercolor='#1e4028',
+                         lightcolor='#1e4028',
+                         darkcolor='#1e4028')
 
         # nombre max de niveau d'énergie voulu
         self.n_max = n_max
@@ -92,6 +103,26 @@ class InterfaceGraphique(tk.Tk):
         self.Frame_bouton2.grid(row=2, column=0, sticky='ew')
         self.Frame_bouton2.grid_columnconfigure(0, weight=1)
         self.Frame_bouton2.grid_columnconfigure(1, weight=1)
+        self.Frame_info = tk.Frame(self.control_frame, bg='#080b0f',
+                                        relief="sunken", pady=15, bd=1)
+        self.Frame_info.grid(row=3, column=0, sticky='ew')
+        self.Frame_info.grid_columnconfigure(0, weight=1)
+        self.Frame_info.grid_columnconfigure(1, weight=1)
+        self.Frame_info.grid_columnconfigure(2, weight=1)
+        self.Frame_infok = tk.Frame(self.Frame_info, bg='#0c1018',
+                                        relief="raised", bd=2, padx=10, pady=5)
+        self.Frame_infok.grid(row=2, column=0, sticky='')
+        self.Frame_infok.grid_columnconfigure(0, weight=1)
+        self.Frame_infoq = tk.Frame(self.Frame_info, bg='#0c1018',
+                                        relief="raised", bd=2, padx=10, pady=5)
+        self.Frame_infoq.grid(row=2, column=1, sticky='')
+        self.Frame_infoq.grid_columnconfigure(0, weight=1)
+        self.Frame_infoE = tk.Frame(self.Frame_info, bg='#0c1018',
+                                        relief="raised", bd=2, padx=10, pady=5)
+        self.Frame_infoE.grid(row=2, column=2, sticky='')
+        self.Frame_infoE.grid_columnconfigure(0, weight=1)
+       
+
         
 
 
@@ -118,7 +149,52 @@ class InterfaceGraphique(tk.Tk):
                                    fg='#7ecf93', bg='#080b0f')
         label_headpanel2.grid(row=1, column=0, sticky ='')
 
+        label_info = tk.Label(self.Frame_info,
+                                   text='\u25B6 DONNEE NUMERIQUE',
+                                   font=(self.FONT_MONO, 11, "bold"),
+                                   fg='#7ecf93', bg='#080b0f')
+        label_info.grid(row=0, column=0, sticky ='w')
+        label_infok = tk.Label(self.Frame_infok,
+                                   text='\u25B6 DONNEE K :',
+                                   font=(self.FONT_MONO, 11, "bold"),
+                                   fg='#7ecf93', bg='#0c1018')
+        label_infok.grid(row=0, column=0, sticky ='w')
+        self.label_infokvaleur = tk.Label(self.Frame_infok,
+                                   text='',
+                                   font=(self.FONT_MONO, 11, "bold"),
+                                   fg='#00ff6e', bg='#0c1018', pady=15)
+        self.label_infokvaleur.grid(row=1, column=0, sticky ='')
+        label_infoq = tk.Label(self.Frame_infoq,
+                                   text='\u25B6 DONNEE Q :',
+                                   font=(self.FONT_MONO, 11, "bold"),
+                                   fg='#7ecf93', bg='#0c1018')
+        label_infoq.grid(row=0, column=0, sticky ='w')
+        self.label_infoqvaleur = tk.Label(self.Frame_infoq,
+                                   text='',
+                                   font=(self.FONT_MONO, 11, "bold"),
+                                   fg='#00ff6e', bg='#0c1018', pady=15)
+        self.label_infoqvaleur.grid(row=1, column=0, sticky ='')
+        label_infoE = tk.Label(self.Frame_infoE,
+                                   text='\u25B6 DONNEE E :',
+                                   font=(self.FONT_MONO, 11, "bold"),
+                                   fg='#7ecf93', bg='#0c1018')
+        label_infoE.grid(row=0, column=0, sticky ='w')
+        self.label_infoEvaleur = tk.Label(self.Frame_infoE,
+                                   text='',
+                                   font=(self.FONT_MONO, 11, "bold"),
+                                   fg='#00ff6e', bg='#0c1018', pady=15)
+        self.label_infoEvaleur.grid(row=1, column=0, sticky ='')
 
+        label_select = tk.Label(self.Frame_info,
+                        text='\u25B6 ETAT n :',
+                        font=(self.FONT_MONO, 11, "bold"),
+                        fg='#7ecf93', bg='#080b0f', pady=10)
+        label_select.grid(row=1, column=0, sticky='')
+
+        self.selecteur = ttk.Spinbox(self.Frame_info, from_=1, to=self.n_max,
+                                    width=10, command=self.on_select, style="Phos.TSpinbox")
+        self.selecteur.grid(row=1, column=1, sticky='')
+        self.selecteur.set(1)
 
         # figure matplotlib
         self.fig = Figure()
@@ -222,8 +298,25 @@ class InterfaceGraphique(tk.Tk):
 
         # fonction pour afficher le graphe
         self.puit_fini()
+
+    def on_select(self):
+        self.n_selectionne = int(self.selecteur.get()) - 1  
+        valeurs, _ = self.e_n()
+        self.update_mesures(valeurs)
+
+    def update_mesures(self, valeurs):
+        if valeurs and self.n_selectionne < len(valeurs):
+            En = valeurs[self.n_selectionne]
+            k  = self.k(En)
+            q  = self.q(En)
+            self.label_infokvaleur.config(text=f'k = {k:.4f}')
+            self.label_infoqvaleur.config(text=f'q = {q:.4f}')
+            self.label_infoEvaleur.config(text=f'E = {En:.4f}')
+        else:
+            self.label_infokvaleur.config(text='—')
+            self.label_infoqvaleur.config(text='—')
+            self.label_infoEvaleur.config(text='—')
     
-    # fonction d'onde pour le puit infini
     def puit_infini(self):
 
         self.ax.clear()
@@ -364,6 +457,7 @@ class InterfaceGraphique(tk.Tk):
                        edgecolor='#00ff6e',
                        labelcolor='#c8ffd4',
                        fontsize=8)
+        self.update_mesures(valeurs)
         self.canvas.draw()
 
     # Fonction qui donne la densité de probabilité
@@ -451,6 +545,7 @@ class InterfaceGraphique(tk.Tk):
                        edgecolor='#00ff6e',
                        labelcolor='#c8ffd4',
                        fontsize=8)
+        self.update_mesures(valeurs)
         self.canvas.draw()
 
     # fonction pour update les xlim et les fonction d'onde
