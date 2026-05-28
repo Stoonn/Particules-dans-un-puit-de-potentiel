@@ -244,7 +244,7 @@ class InterfaceGraphique(tk.Tk):
                 psy[absol] = (1/(np.sqrt(int(L)))) * (np.sin(n * np.pi * x[absol] / (2 * int(L))))
             else:
                 psy[absol] = (1/(np.sqrt(int(L)))) * (np.cos(n * np.pi * x[absol] / (2 * int(L))))
-            self.ax.plot(x, psy + E, label=rf'$\psi_{{{n+1}}}(x)$')
+            self.ax.plot(x, psy + E, label=rf'$\psi_{{{n}}}(x)$')
         self.ax.set_ylim(0.2*(1 * np.pi) ** 2 / (8 * int(L) ** 2),
                          (self.n_max * np.pi) ** 2 / (8 * int(L) ** 2)*1.1)
         self.ax.legend(loc='upper right',
@@ -442,7 +442,7 @@ class InterfaceGraphique(tk.Tk):
                 psy[absol] = ((1/(np.sqrt(int(L)))) * (np.sin(n * np.pi * x[absol] / (2 * int(L)))))**2
             else:
                 psy[absol] = ((1/(np.sqrt(int(L)))) * (np.cos(n * np.pi * x[absol] / (2 * int(L)))))**2
-            self.ax.plot(x, psy + E, label=rf'$|\psi_{{{n+1}}}(x)|^{{2}}$')
+            self.ax.plot(x, psy + E, label=rf'$|\psi_{{{n}}}(x)|^{{2}}$')
             self.ax.fill_between(x, psy + E, E, alpha=0.2)
         self.ax.set_ylim(0.2*(1 * np.pi) ** 2 / (8 * int(L) ** 2),
                          (self.n_max * np.pi) ** 2 / (8 * int(L) ** 2)*1.1)
