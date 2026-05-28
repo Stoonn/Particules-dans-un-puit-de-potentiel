@@ -21,8 +21,8 @@ class InterfaceGraphique(tk.Tk):
         tk.Tk.__init__(self)
 
         # variables de départs
-        self.mode_puits = 'fini'   
-        self.mode_affichage = 'onde'  
+        self.mode_puits = 'fini'
+        self.mode_affichage = 'onde'
         self.FONT_MONO = "Courier New"
         self.m = 1
         self.hbar = 1
@@ -92,8 +92,6 @@ class InterfaceGraphique(tk.Tk):
         self.Frame_bouton2.grid(row=2, column=0, sticky='ew')
         self.Frame_bouton2.grid_columnconfigure(0, weight=1)
         self.Frame_bouton2.grid_columnconfigure(1, weight=1)
-        
-
 
         # les labels des différentes frames
         label_headcontrol1 = tk.Label(self.headcontrol_frame,
@@ -116,9 +114,7 @@ class InterfaceGraphique(tk.Tk):
                                    text='MODELISATION DU PUIT DE POTENTIEL QUANTIQUE',
                                    font=(self.FONT_MONO, 11, "bold"),
                                    fg='#7ecf93', bg='#080b0f')
-        label_headpanel2.grid(row=1, column=0, sticky ='')
-
-
+        label_headpanel2.grid(row=1, column=0, sticky='')
 
         # figure matplotlib
         self.fig = Figure()
@@ -133,6 +129,7 @@ class InterfaceGraphique(tk.Tk):
         self.canvas.get_tk_widget().grid(row=0, column=0,
                                         sticky='nsew', padx=50, pady=50)
         self.canvas.get_tk_widget().configure(bg="#080b0f", highlightthickness=0)
+
         # Label qui affiche la valeur largeur
         self.largeur_label = tk.Label(self.Frame_largeur,
                                       text=f'LARGEUR a : 1',
@@ -202,7 +199,6 @@ class InterfaceGraphique(tk.Tk):
         self.Largeur_puit.set(1)
         self.Hauteur_puit.set(1)
 
-
         # Bouton a check permettant d'activer et désactiver le potentiel infini
         self.affichage_label = tk.Label(self.Frame_affichage,
                                         text='\u25B6 MODE D\'AFFICHAGE',
@@ -222,7 +218,7 @@ class InterfaceGraphique(tk.Tk):
 
         # fonction pour afficher le graphe
         self.puit_fini()
-    
+
     # fonction d'onde pour le puit infini
     def puit_infini(self):
 
@@ -505,6 +501,7 @@ class InterfaceGraphique(tk.Tk):
             self.bout_fini.config(fg='#00ff6e', relief='sunken')
             self.bout_infini.config(fg='#c8ffd4', relief='raised')
             self.proba()
+
     # quand on touche aux boutons
     def refresh(self, *args):
         self.largeur_label.config(text=f'LARGEUR a : {int(self.Largeur_puit.get())}',
